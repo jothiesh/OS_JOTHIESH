@@ -718,6 +718,26 @@ html,body{width:100%;height:100%;background:var(--bg-0);color:var(--text);font-f
   .contact-grid{grid-template-columns:1fr}
   .ach{grid-template-columns:1fr}
 }
+
+/* ═══════════════════════════════════════════════════════
+   🖼️ WALLPAPER SYSTEM
+   ═══════════════════════════════════════════════════════ */
+#desktop{background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important;transition:background .5s ease}
+.wp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}
+.wp-swatch{width:100%;aspect-ratio:16/9;border-radius:8px;cursor:pointer;border:2px solid var(--border);transition:all .2s ease;position:relative;overflow:hidden}
+.wp-swatch:hover{border-color:var(--glow);transform:scale(1.04)}
+.wp-swatch.active{border-color:var(--glow);box-shadow:0 0 12px #00ffa340}
+.wp-swatch::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;text-shadow:0 0 8px #000;opacity:0;transition:opacity .2s}
+.wp-swatch.active::after{opacity:1}
+.wp-url-row{display:flex;gap:6px;margin-top:10px}
+.wp-url-row input{flex:1;background:var(--bg-3);border:1px solid var(--border);border-radius:var(--rs);padding:8px 12px;color:var(--text);font-family:var(--mono);font-size:11px;outline:none;transition:border-color .2s}
+.wp-url-row input:focus{border-color:var(--glow)}
+.wp-url-row button{background:var(--glow);color:var(--bg-0);border:none;border-radius:var(--rs);padding:8px 14px;font-weight:700;font-size:11px;cursor:pointer;white-space:nowrap}
+.wp-url-row button:hover{background:var(--glow-d)}
+.wp-upload-row{margin-top:6px}
+.wp-upload-row label{display:inline-flex;align-items:center;gap:6px;background:var(--bg-3);border:1px solid var(--border);border-radius:var(--rs);padding:8px 14px;font-family:var(--mono);font-size:11px;color:var(--text-d);cursor:pointer;transition:all .2s}
+.wp-upload-row label:hover{border-color:var(--glow);color:var(--glow)}
+.wp-upload-row input[type=file]{display:none}
 </style>
 </head>
 <body>
@@ -1243,7 +1263,7 @@ html,body{width:100%;height:100%;background:var(--bg-0);color:var(--text);font-f
     <div class="wc">
       <div class="url"><span class="lk">🔒</span> jothiesh.click/contact</div>
       <div class="contact-grid">
-        <a class="c-card" href="mailto:jothiesh7@gmail.com"><span class="c-i">✉️</span><div><div class="c-label">Email</div><div class="c-val">jothiesh7@gmail.com</div></div></a>
+        <a class="c-card" href="/cdn-cgi/l/email-protection#7b11140f13121e08134c3b1c161a121755181416"><span class="c-i">✉️</span><div><div class="c-label">Email</div><div class="c-val"><span class="__cf_email__" data-cfemail="32585d465a5b57415a0572555f535b5e1c515d5f">[email&#160;protected]</span></div></div></a>
         <a class="c-card" href="tel:+916380900348"><span class="c-i">📱</span><div><div class="c-label">Phone</div><div class="c-val">+91 63809 00348</div></div></a>
         <a class="c-card" href="https://github.com/jothiesh" target="_blank"><span class="c-i">⚡</span><div><div class="c-label">GitHub</div><div class="c-val">github.com/jothiesh</div></div></a>
         <a class="c-card" href="https://linkedin.com/in/jothiesh-7-joe" target="_blank"><span class="c-i">💼</span><div><div class="c-label">LinkedIn</div><div class="c-val">linkedin.com/in/jothiesh</div></div></a>
@@ -1294,7 +1314,7 @@ html,body{width:100%;height:100%;background:var(--bg-0);color:var(--text);font-f
   </div>
 
   <!-- ═══════════ SETTINGS WINDOW ═══════════ -->
-  <div class="w" id="w-settings" style="width:400px;height:380px;top:55px;left:230px">
+  <div class="w" id="w-settings" style="width:480px;height:580px;top:55px;left:180px">
     <div class="wb" onmousedown="drag(event,'w-settings')">
       <div class="wd"><div class="dd c" onclick="C('settings')"></div><div class="dd m" onclick="M('settings')"></div><div class="dd x"></div></div>
       <span class="wt">settings</span><button class="wclose" onclick="C('settings')">✕</button>
@@ -1304,6 +1324,19 @@ html,body{width:100%;height:100%;background:var(--bg-0);color:var(--text);font-f
         <div class="sr"><span>Dark Mode</span><div class="tg on" onclick="this.classList.toggle('on')"></div></div>
         <div class="sr"><span>Particles</span><div class="tg on" id="tg-particles" onclick="toggleParticles(this)"></div></div>
         <div class="sr"><span>Animations</span><div class="tg on" onclick="this.classList.toggle('on')"></div></div>
+      </div>
+      <div class="sg"><h3>🖼️ Wallpaper</h3>
+        <div class="wp-grid" id="wp-grid"></div>
+        <div class="wp-url-row">
+          <input id="wp-url-input" placeholder="Paste image URL (https://...)">
+          <button onclick="applyWpUrl()">Apply</button>
+        </div>
+        <div class="wp-upload-row">
+          <label>📁 Upload from device
+            <input type="file" accept="image/*" onchange="applyWpFile(event)">
+          </label>
+          <button onclick="resetWp()" style="margin-left:8px;background:none;border:1px solid var(--border);color:var(--text-d);border-radius:var(--rs);padding:6px 12px;font-size:11px;cursor:pointer;font-family:var(--mono)">✕ Reset</button>
+        </div>
       </div>
       <div class="sg"><h3>System</h3>
         <div class="sr"><span>Notifications</span><div class="tg on" onclick="this.classList.toggle('on')"></div></div>
@@ -1690,7 +1723,7 @@ html,body{width:100%;height:100%;background:var(--bg-0);color:var(--text);font-f
         <textarea placeholder="Your message..."></textarea>
         <button class="email-send" onclick="sendEmail()">Send Message 🚀</button>
       </div>
-      <div style="margin-top:12px;text-align:center;font-family:var(--mono);font-size:10px;color:var(--text-d)">Or email directly: <a href="mailto:jothiesh7@gmail.com" style="color:var(--glow);text-decoration:none">jothiesh7@gmail.com</a></div>
+      <div style="margin-top:12px;text-align:center;font-family:var(--mono);font-size:10px;color:var(--text-d)">Or email directly: <a href="/cdn-cgi/l/email-protection#167c79627e7f73657e2156717b777f7a3875797b" style="color:var(--glow);text-decoration:none"><span class="__cf_email__" data-cfemail="95fffae1fdfcf0e6fda2d5f2f8f4fcf9bbf6faf8">[email&#160;protected]</span></a></div>
     </div>
   </div>
 
@@ -1733,7 +1766,7 @@ html,body{width:100%;height:100%;background:var(--bg-0);color:var(--text);font-f
              ║ 1. Place resume.pdf in same folder    ║
              ║ 2. Change href below to "resume.pdf"  ║
              ╚═══════════════════════════════════════╝ -->
-        <a class="dl-btn" href="mailto:jothiesh7@gmail.com?subject=Resume Request" target="_blank">📥 Download PDF</a>
+        <a class="dl-btn" href="/cdn-cgi/l/email-protection#7e14110a16171b0d16493e19131f1712501d1113410d0b1c141b1d0a432c1b0d0b131b5e2c1b0f0b1b0d0a" target="_blank">📥 Download PDF</a>
         <div class="dl-meta">
           <span>📋 4 Pages</span>
           <span>📁 PDF Format</span>
@@ -1840,7 +1873,7 @@ html,body{width:100%;height:100%;background:var(--bg-0);color:var(--text);font-f
 <!-- ═══════════ NOTIFICATION ═══════════ -->
 <div class="notif" id="notif"><span id="ntxt"></span></div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 /* ═══════════════════════════════════════════════════════
    ✨ PARTICLE SYSTEM
    ═══════════════════════════════════════════════════════ */
@@ -2391,6 +2424,133 @@ function updPlanProgress(){
   if(pctEl)pctEl.textContent=pct+'%';
   if(fillEl)setTimeout(()=>fillEl.style.width=pct+'%',100);
 }
+
+/* ═══════════════════════════════════════════════════════
+   🖼️ WALLPAPER SYSTEM
+   ═══════════════════════════════════════════════════════ */
+const wpPresets=[
+  {label:'Baby Dragon',style:'background-image:url(https://github.com/jothiesh/OS_JOTHIESH/blob/main/Baby%20Dragon.png?raw=true)',isImage:true},
+  {label:'Default',style:'background:#05060b'},
+  {label:'Aurora',style:'background:linear-gradient(135deg,#0a0014 0%,#0d1b4b 40%,#00ffa320 70%,#0a0014 100%)'},
+  {label:'Nebula',style:'background:linear-gradient(135deg,#0a001a 0%,#1a0033 40%,#ff4da615 70%,#0a001a 100%)'},
+  {label:'Ocean',style:'background:linear-gradient(135deg,#001a2c 0%,#003355 50%,#006699 100%)'},
+  {label:'Sunset',style:'background:linear-gradient(to bottom,#0a0010 0%,#2d0040 40%,#ff4d00 80%,#ffaa00 100%)'},
+  {label:'Forest',style:'background:linear-gradient(135deg,#001a0a 0%,#003311 50%,#006622 100%)'},
+  {label:'Cyber',style:'background:linear-gradient(135deg,#000511 0%,#0a0020 50%,#00ffff08 100%)'},
+  {label:'Rose',style:'background:linear-gradient(135deg,#1a0010 0%,#330020 50%,#ff4da610 100%)'},
+  {label:'Midnight',style:'background:linear-gradient(to bottom,#000000 0%,#050015 50%,#0a002a 100%)'},
+  {label:'Matrix',style:'background:radial-gradient(ellipse at 50% 0%,#00ff4418 0%,#000000 60%)'},
+  {label:'Galaxy',style:'background:radial-gradient(ellipse at 30% 40%,#1a0030 0%,#000010 60%),radial-gradient(ellipse at 70% 70%,#00204020 0%,transparent 60%)'},
+];
+
+let activeWpIdx=0;
+
+function initWallpaperGrid(){
+  const grid=document.getElementById('wp-grid');
+  if(!grid)return;
+  grid.innerHTML='';
+  wpPresets.forEach((wp,i)=>{
+    const s=document.createElement('div');
+    s.className='wp-swatch'+(i===activeWpIdx?' active':'');
+    s.title=wp.label;
+    if(wp.isImage){
+      const urlMatch=wp.style.match(/url\(([^)]+)\)/);
+      if(urlMatch) s.style.cssText=`background-image:${wp.style.match(/url\([^)]+\)/)[0]};background-size:cover;background-position:center`;
+    } else {
+      s.style.cssText=wp.style;
+    }
+    s.innerHTML=`<span style="position:absolute;bottom:4px;left:0;right:0;text-align:center;font-family:var(--mono);font-size:8px;color:#ffffffbb;text-shadow:0 1px 4px #000;letter-spacing:.5px">${wp.label}</span>`;
+    s.onclick=()=>applyWpPreset(i);
+    grid.appendChild(s);
+  });
+}
+
+// Auto-load Baby Dragon on first visit if no saved wallpaper
+function loadSavedWallpaper(){
+  try{
+    const saved=localStorage.getItem('jot-wallpaper');
+    if(saved){
+      const d=JSON.parse(saved);
+      if(d.type==='preset')applyWpPreset(d.idx);
+      else if(d.type==='url')setWpImage(d.url);
+    } else {
+      // Default: Baby Dragon (index 0)
+      applyWpPreset(0);
+    }
+  }catch(e){applyWpPreset(0);}
+}
+
+function applyWpPreset(idx){
+  activeWpIdx=idx;
+  const desk=document.getElementById('desktop');
+  const wp=wpPresets[idx];
+  if(wp.isImage){
+    // Extract URL from style string
+    const urlMatch=wp.style.match(/url\(([^)]+)\)/);
+    if(urlMatch)setWpImage(urlMatch[1]);
+  } else {
+    desk.style.backgroundImage='none';
+    const tmp=document.createElement('div');
+    tmp.style.cssText=wp.style;
+    if(tmp.style.background) desk.style.background=tmp.style.background;
+    if(tmp.style.backgroundImage){desk.style.backgroundImage=tmp.style.backgroundImage;desk.style.background='';}
+  }
+  document.querySelectorAll('.wp-swatch').forEach((el,i)=>el.classList.toggle('active',i===idx));
+  localStorage.setItem('jot-wallpaper',JSON.stringify({type:'preset',idx}));
+  notify('🖼️ Wallpaper applied!');
+}
+
+function applyWpUrl(){
+  const url=document.getElementById('wp-url-input').value.trim();
+  if(!url){notify('⚠️ Paste an image URL first');return;}
+  setWpImage(url);
+  localStorage.setItem('jot-wallpaper',JSON.stringify({type:'url',url}));
+  document.getElementById('wp-url-input').value='';
+  notify('🖼️ Wallpaper set from URL!');
+}
+
+function applyWpFile(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    setWpImage(ev.target.result);
+    notify('🖼️ Wallpaper set from file!');
+  };
+  reader.readAsDataURL(file);
+}
+
+function setWpImage(src){
+  const desk=document.getElementById('desktop');
+  desk.style.background='none';
+  desk.style.backgroundImage=`url(${src})`;
+  desk.style.backgroundSize='cover';
+  desk.style.backgroundPosition='center';
+  activeWpIdx=-1;
+  document.querySelectorAll('.wp-swatch').forEach(el=>el.classList.remove('active'));
+}
+
+function resetWp(){
+  const desk=document.getElementById('desktop');
+  desk.style.background='';
+  desk.style.backgroundImage='';
+  activeWpIdx=0;
+  initWallpaperGrid();
+  localStorage.removeItem('jot-wallpaper');
+  notify('🖼️ Wallpaper reset');
+}
+
+
+
+
+// Init grid when settings window opens
+const _origO=O;
+window.O=function(n){
+  _origO(n);
+  if(n==='settings')setTimeout(initWallpaperGrid,50);
+};
+
+loadSavedWallpaper();
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
@@ -2780,15 +2940,4 @@ function worldAction(a){
       }showWorldMsg('🎆 Fireworks for us! 🎆');break;
     case 'dance':w3.dancing=!w3.dancing;w3.walking=false;w3.hugging=false;if(!w3.dancing){w3.jot.rotation.y=0;w3.bam.rotation.y=0}showWorldMsg(w3.dancing?'💃🕺 Let\'s dance, Bambiee!':'Taking a break 😊');break;
     case 'walk':w3.walking=!w3.walking;w3.dancing=false;w3.hugging=false;showWorldMsg(w3.walking?'🚶‍♂️🚶‍♀️ Walking hand in hand...':'Stopped to enjoy the view 😊');break;
-    case 'hug':w3.hugging=!w3.hugging;w3.dancing=false;w3.walking=false;showWorldMsg(w3.hugging?'🤗 Hugging tight! I love you Bambiee 💖':'Still close to you ❤️');break;
-    case 'message':showWorldMsg(loveMsgs[Math.floor(Math.random()*loveMsgs.length)]);break;
-  }
-}
-
-function showWorldMsg(text){
-  const el=document.getElementById('world-msg');el.textContent=text;el.classList.add('show');
-  setTimeout(()=>el.classList.remove('show'),3500);
-}
-</script>
-</body>
-</html>
+    case 'hug':w3.hugging=!w3.hugging
