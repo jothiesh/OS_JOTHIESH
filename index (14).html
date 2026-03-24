@@ -1,0 +1,2794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>jothiesh.click — Personal OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Syne:wght@400;500;600;700;800&family=Instrument+Sans:wght@400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════
+   🎨 DESIGN SYSTEM — CSS Variables
+   ═══════════════════════════════════════════════════════ */
+:root {
+  --bg-0: #05060b;
+  --bg-1: #0a0b14;
+  --bg-2: #10111d;
+  --bg-3: #181929;
+  --bg-4: #1f2035;
+  --bg-glass: #10111dcc;
+  --border: #262842;
+  --border-h: #363860;
+  --glow: #00ffa3;
+  --glow-d: #00cc82;
+  --glow-bg: #00ffa308;
+  --glow-bg2: #00ffa318;
+  --pink: #ff4da6;
+  --blue: #4d9fff;
+  --purple: #a855f7;
+  --gold: #fbbf24;
+  --red: #ef4444;
+  --cyan: #22d3ee;
+  --orange: #f97316;
+  --text: #ccd0e8;
+  --text-d: #6b70a0;
+  --text-b: #eef0ff;
+  --mono: 'JetBrains Mono', monospace;
+  --disp: 'Syne', sans-serif;
+  --body: 'Instrument Sans', sans-serif;
+  --hand: 'Caveat', cursive;
+  --bar-h: 52px;
+  --r: 14px;
+  --rs: 8px;
+  --shadow: 0 30px 100px -20px #000000dd, 0 0 1px #00ffa320;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;background:var(--bg-0);color:var(--text);font-family:var(--body);overflow:hidden;-webkit-font-smoothing:antialiased}
+::selection{background:#00ffa333;color:var(--text-b)}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px}
+::-webkit-scrollbar-thumb:hover{background:var(--glow)}
+
+/* ═══════════════════════════════════════════════════════
+   🖥️ BOOT SEQUENCE
+   ═══════════════════════════════════════════════════════ */
+#boot{position:fixed;inset:0;z-index:99999;background:var(--bg-0);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 1s ease,filter 0.8s ease}
+#boot.bye{opacity:0;filter:blur(12px);pointer-events:none}
+.b-logo{font-family:var(--disp);font-size:48px;font-weight:800;letter-spacing:8px;background:linear-gradient(135deg,var(--glow),var(--cyan),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.b-sub{font-family:var(--mono);font-size:10px;color:var(--text-d);margin-top:16px;letter-spacing:4px;text-transform:uppercase}
+.b-lines{font-family:var(--mono);font-size:11px;color:var(--text-d);margin-top:36px;max-width:460px;line-height:2;text-align:left}
+.b-bar{width:340px;height:2px;background:var(--bg-3);margin-top:28px;border-radius:2px;overflow:hidden}
+.b-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--glow),var(--cyan));border-radius:2px;transition:width 0.3s ease}
+
+/* ═══════════════════════════════════════════════════════
+   ✨ PARTICLES
+   ═══════════════════════════════════════════════════════ */
+#particles{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ═══════════════════════════════════════════════════════
+   🖥️ DESKTOP
+   ═══════════════════════════════════════════════════════ */
+#desktop{width:100%;height:calc(100% - var(--bar-h));position:relative;z-index:1;overflow:hidden}
+#desktop::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 600px 400px at 10% 25%,#00ffa306 0%,transparent 70%),radial-gradient(ellipse 500px 500px at 90% 60%,#4d9fff06 0%,transparent 70%),radial-gradient(ellipse 400px 300px at 50% 85%,#ff4da605 0%,transparent 70%);pointer-events:none}
+#desktop::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,#ffffff05 1px,transparent 1px);background-size:44px 44px;pointer-events:none}
+
+/* ── Desktop Icons ── */
+.di{display:flex;flex-wrap:wrap;flex-direction:column;align-content:flex-start;gap:2px;padding:14px;height:100%;position:relative;z-index:2}
+.d-i{width:78px;height:78px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border-radius:11px;cursor:pointer;transition:all 0.2s var(--ease);border:1px solid transparent;user-select:none}
+.d-i:hover{background:#ffffff06;border-color:#ffffff0a;transform:translateY(-2px)}
+.d-i:active{transform:scale(0.92)}
+.d-i .ic{font-size:30px;filter:drop-shadow(0 4px 10px #00000088)}
+.d-i .lb{font-size:9px;font-family:var(--mono);color:var(--text);text-shadow:0 2px 6px #000;text-align:center;line-height:1.2;letter-spacing:0.3px}
+.d-i .badge{position:absolute;top:3px;right:8px;width:7px;height:7px;background:var(--pink);border-radius:50%;box-shadow:0 0 8px var(--pink);animation:pls 2s ease infinite}
+@keyframes pls{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.5}}
+
+/* ═══════════════════════════════════════════════════════
+   🪟 WINDOWS
+   ═══════════════════════════════════════════════════════ */
+.w{position:absolute;background:var(--bg-glass);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);display:none;flex-direction:column;overflow:hidden;min-width:340px;min-height:260px;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
+.w.on{display:flex;animation:wIn .35s cubic-bezier(.16,1,.3,1)}
+@keyframes wIn{from{transform:scale(.86) translateY(24px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.wb{height:48px;background:linear-gradient(180deg,#1e1f36 0%,#151628 100%);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 14px;cursor:grab;flex-shrink:0;gap:8px}
+.wb:active{cursor:grabbing}
+.wd{display:flex;gap:8px;align-items:center;z-index:10}
+.dd{width:16px;height:16px;border-radius:50%;cursor:pointer;transition:transform .12s ease,box-shadow .2s ease;position:relative;border:none;flex-shrink:0}
+.dd:hover{transform:scale(1.25)}
+.dd::after{font-size:10px;font-weight:900;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#000000aa;opacity:0;transition:opacity .12s;line-height:1}
+.dd:hover::after{opacity:1}
+.dd.c{background:#ff5f57;box-shadow:0 0 6px #ff5f5766}.dd.c:hover{box-shadow:0 0 12px #ff5f57aa}.dd.c::after{content:'✕';font-size:9px}
+.dd.m{background:#febc2e;box-shadow:0 0 6px #febc2e66}.dd.m:hover{box-shadow:0 0 12px #febc2eaa}.dd.m::after{content:'−';font-size:12px}
+.dd.x{background:#28c840;box-shadow:0 0 6px #28c84066}.dd.x:hover{box-shadow:0 0 12px #28c840aa}.dd.x::after{content:'⤢';font-size:9px}
+/* Additional visible close button on right side */
+.wclose{margin-left:auto;background:none;border:1px solid var(--border);color:var(--text-d);font-size:14px;width:28px;height:28px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s ease;flex-shrink:0;font-family:var(--mono)}
+.wclose:hover{background:var(--red);border-color:var(--red);color:#fff;transform:scale(1.1)}
+.wt{flex:1;text-align:center;font-family:var(--mono);font-size:10px;color:var(--text-d);letter-spacing:1.5px;text-transform:uppercase}
+.wc{flex:1;overflow-y:auto;padding:24px}
+
+/* ═══════════════════════════════════════════════════════
+   🔀 SPA ROUTER (Angular-style tabs)
+   ═══════════════════════════════════════════════════════ */
+.nav{display:flex;gap:2px;background:var(--bg-1);padding:4px;border-radius:10px;margin-bottom:20px;overflow-x:auto}
+.nav a{flex:1;text-align:center;padding:8px 10px;font-family:var(--mono);font-size:10px;letter-spacing:.5px;color:var(--text-d);border-radius:8px;cursor:pointer;transition:all .2s var(--ease);white-space:nowrap;text-decoration:none}
+.nav a:hover{color:var(--text);background:#ffffff06}
+.nav a.on{background:var(--glow-bg2);color:var(--glow);font-weight:600}
+.view{display:none;animation:fS .3s ease}.view.on{display:block}
+@keyframes fS{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══════════════════════════════════════════════════════
+   🏠 URL BAR
+   ═══════════════════════════════════════════════════════ */
+.url{background:var(--bg-0);border:1px solid var(--border);border-radius:var(--rs);padding:7px 14px;margin-bottom:18px;font-family:var(--mono);font-size:10px;color:var(--text-d);display:flex;align-items:center;gap:8px}
+.url .lk{color:var(--glow)}
+
+/* ═══════════════════════════════════════════════════════
+   👤 ABOUT — Personal Bento Grid
+   ═══════════════════════════════════════════════════════ */
+.ab-hero{text-align:center;padding:10px 0 28px}
+.bento{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.bento-card{background:var(--bg-3);border:1px solid var(--border);border-radius:12px;padding:18px;transition:all .25s var(--ease);position:relative;overflow:hidden}
+.bento-card:hover{border-color:var(--glow);transform:translateY(-2px);box-shadow:0 8px 30px #00ffa310}
+.bento-card.span2{grid-column:span 2}
+.bento-card.span3{grid-column:span 3}
+.bento-card.tall{grid-row:span 2}
+.bento-card .b-icon{font-size:24px;margin-bottom:8px}
+.bento-card .b-label{font-family:var(--mono);font-size:9px;color:var(--text-d);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}
+.bento-card .b-value{font-size:14px;color:var(--text-b);font-weight:600;line-height:1.5}
+.bento-card .b-sub{font-size:11px;color:var(--text-d);margin-top:4px;line-height:1.5}
+/* Profile card (large) */
+.bento-profile{display:flex;flex-direction:column;align-items:center;text-align:center;padding:24px}
+.bento-profile .b-name{font-family:var(--disp);font-size:26px;font-weight:800;background:linear-gradient(135deg,var(--glow),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-top:10px}
+.bento-profile .b-tagline{font-family:var(--mono);font-size:10px;color:var(--text-d);margin-top:4px;letter-spacing:1px}
+/* Status indicator */
+.status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;animation:pls 2s ease infinite}
+.status-dot.online{background:var(--glow);box-shadow:0 0 8px var(--glow)}
+.status-dot.busy{background:var(--gold);box-shadow:0 0 8px var(--gold)}
+/* Mood bar */
+.mood-bar{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.mood-tag{font-size:11px;padding:4px 10px;border-radius:16px;background:var(--bg-0);border:1px solid var(--border);color:var(--text-d);display:flex;align-items:center;gap:4px}
+/* Quote card */
+.bento-quote{font-family:var(--hand);font-size:20px;color:var(--text);line-height:1.6;position:relative;padding-left:16px;border-left:3px solid var(--glow)}
+.bento-quote .q-author{font-family:var(--mono);font-size:10px;color:var(--text-d);margin-top:8px;font-style:normal}
+/* Bucket list */
+.bucket-item{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:12px;color:var(--text)}
+.bucket-item .check{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0}
+.bucket-item .check.done{background:var(--glow);border-color:var(--glow);color:var(--bg-0)}
+.bucket-item.done-text{color:var(--text-d);text-decoration:line-through}
+/* Interest pills */
+.interest-pills{display:flex;flex-wrap:wrap;gap:6px}
+.i-pill{font-size:11px;padding:5px 12px;border-radius:20px;background:var(--bg-0);border:1px solid var(--border);color:var(--text);transition:all .2s ease;cursor:default}
+.i-pill:hover{border-color:var(--glow);color:var(--glow);background:var(--glow-bg)}
+/* Love card */
+.love-mini{display:flex;align-items:center;gap:12px}
+.love-mini .heart-icon{font-size:36px;animation:hb 1.2s ease-in-out infinite}
+.love-mini .love-text{font-family:var(--hand);font-size:18px;color:var(--pink);line-height:1.4}
+@media(max-width:768px){.bento{grid-template-columns:1fr}.bento-card.span2,.bento-card.span3{grid-column:span 1}}
+
+/* ═══════════════════════════════════════════════════════
+   🖼️ HOW TO ADD YOUR PHOTO — READ THIS!
+   ═══════════════════════════════════════════════════════
+
+   METHOD 1: Local image file
+   ──────────────────────────
+   Put your image file (e.g. jothiesh.jpg) in the SAME
+   folder as this index.html. Then change:
+
+     <div class="avatar">J</div>
+
+   To:
+
+     <img class="avatar" src="jothiesh.jpg" alt="Jothiesh">
+
+   METHOD 2: Online image URL
+   ──────────────────────────
+   If your image is hosted online (Google Drive, Imgur,
+   GitHub, etc.), use the direct URL:
+
+     <img class="avatar" src="https://i.imgur.com/YOUR_ID.jpg" alt="Jothiesh">
+
+   METHOD 3: Base64 (no external file needed)
+   ──────────────────────────────────────────
+   Convert image to base64 at https://base64.guru/converter/encode/image
+   Then:
+
+     <img class="avatar" src="data:image/jpeg;base64,/9j/4AAQ..." alt="Jothiesh">
+
+   The .avatar CSS class works for both <div> and <img> tags.
+   ═══════════════════════════════════════════════════════ */
+.avatar{width:110px;height:110px;border-radius:50%;background:linear-gradient(135deg,var(--glow),var(--blue));margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:44px;font-family:var(--disp);font-weight:800;color:var(--bg-0);box-shadow:0 0 40px #00ffa322,0 0 80px #00ffa311;animation:avGlow 4s ease-in-out infinite;object-fit:cover}
+@keyframes avGlow{0%,100%{box-shadow:0 0 30px #00ffa322}50%{box-shadow:0 0 50px #00ffa344,0 0 100px #00ffa311}}
+.ab-name{font-family:var(--disp);font-size:30px;font-weight:800;background:linear-gradient(135deg,var(--glow),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.ab-tag{font-family:var(--mono);font-size:11px;color:var(--text-d);margin-top:4px;letter-spacing:1px}
+.ab-loc{font-size:12px;color:var(--text-d);margin-top:6px}
+.ab-bio{font-size:14px;line-height:1.9;color:var(--text);margin-top:18px;padding:0 8px}
+.ab-links{display:flex;gap:10px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+.ab-link{font-family:var(--mono);font-size:10px;padding:6px 14px;border:1px solid var(--border);border-radius:20px;color:var(--text-d);text-decoration:none;transition:all .2s var(--ease)}
+.ab-link:hover{border-color:var(--glow);color:var(--glow);background:var(--glow-bg)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:22px}
+.st{background:var(--bg-3);border:1px solid var(--border);border-radius:10px;padding:14px 8px;text-align:center;transition:all .2s var(--ease)}
+.st:hover{border-color:var(--glow);transform:translateY(-2px)}
+.st .n{font-size:22px;font-weight:800;font-family:var(--disp);color:var(--glow)}
+.st .l{font-size:9px;color:var(--text-d);font-family:var(--mono);margin-top:3px;text-transform:uppercase;letter-spacing:1.5px}
+
+/* ═══════════════════════════════════════════════════════
+   📄 RESUME
+   ═══════════════════════════════════════════════════════ */
+.rs{margin-bottom:28px}
+.rs h2{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--glow);letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:14px}
+.ri{margin-bottom:18px;padding-left:16px;border-left:2px solid var(--border);transition:border-color .2s ease}
+.ri:hover{border-left-color:var(--glow)}
+.ri h3{font-size:14px;font-weight:700;color:var(--text-b)}
+.ri .mt{font-size:11px;color:var(--glow-d);font-family:var(--mono);margin:3px 0 6px}
+.ri p{font-size:12px;color:var(--text-d);line-height:1.7}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.tag{font-size:10px;font-family:var(--mono);padding:4px 10px;border-radius:20px;border:1px solid var(--border);color:var(--text-d);transition:all .2s ease;cursor:default}
+.tag:hover{border-color:var(--glow);color:var(--glow);background:var(--glow-bg)}
+.exp-card{background:var(--bg-3);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px;transition:all .25s var(--ease)}
+.exp-card:hover{border-color:var(--glow);transform:translateY(-2px);box-shadow:0 8px 30px #00ffa310}
+.exp-card h3{font-size:14px;font-weight:700;color:var(--text-b)}
+.exp-card .role{font-size:12px;color:var(--glow-d);font-family:var(--mono);margin:3px 0}
+.exp-card .period{font-size:10px;color:var(--text-d);font-family:var(--mono)}
+.exp-card ul{margin-top:10px;padding-left:16px}
+.exp-card li{font-size:11px;color:var(--text-d);line-height:1.7;margin-bottom:4px}
+
+/* ═══════════════════════════════════════════════════════
+   🚀 PROJECTS
+   ═══════════════════════════════════════════════════════ */
+.pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.pc{background:var(--bg-3);border:1px solid var(--border);border-radius:12px;padding:20px;transition:all .25s var(--ease);cursor:pointer;position:relative;overflow:hidden}
+.pc:hover{border-color:var(--glow);transform:translateY(-3px);box-shadow:0 10px 40px #00ffa312}
+.pc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--glow),var(--cyan));transform:scaleX(0);transition:transform .3s ease;transform-origin:left}
+.pc:hover::before{transform:scaleX(1)}
+.pc .pi{font-size:28px;margin-bottom:10px}
+.pc h3{font-size:13px;font-weight:700;color:var(--text-b);margin-bottom:5px}
+.pc p{font-size:11px;color:var(--text-d);line-height:1.6}
+.pc .pt{margin-top:10px;font-size:9px;font-family:var(--mono);color:var(--glow-d);letter-spacing:.5px}
+.pc .pn{position:absolute;top:12px;right:14px;font-family:var(--mono);font-size:9px;color:var(--text-d);opacity:.5}
+
+/* ═══════════════════════════════════════════════════════
+   ⬛ TERMINAL
+   ═══════════════════════════════════════════════════════ */
+.term{background:var(--bg-0);font-family:var(--mono);font-size:12px;padding:20px;min-height:100%;border-radius:var(--rs)}
+.tl{margin-bottom:5px;line-height:1.6}
+.tp{color:var(--glow)}.tc{color:var(--text-b)}.to{color:var(--text-d);padding-left:10px}
+.ti{display:flex;align-items:center;gap:8px;margin-top:8px}
+.ti input{background:none;border:none;outline:none;color:var(--text-b);font-family:var(--mono);font-size:12px;flex:1;caret-color:var(--glow)}
+
+/* ═══════════════════════════════════════════════════════
+   📁 FILE MANAGER
+   ═══════════════════════════════════════════════════════ */
+.fm-bar{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.fm-path{flex:1;background:var(--bg-0);border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-family:var(--mono);font-size:10px;color:var(--text-d);display:flex;align-items:center;gap:4px;min-width:0;overflow:hidden}
+.fm-path .seg{color:var(--glow);cursor:pointer}.fm-path .seg:hover{text-decoration:underline}
+.fb{background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:5px 10px;color:var(--text-d);font-size:11px;cursor:pointer;transition:all .15s ease;font-family:var(--mono);white-space:nowrap}
+.fb:hover{border-color:var(--glow);color:var(--glow)}.fb.on{background:var(--glow-bg2);border-color:var(--glow);color:var(--glow)}
+.fm-tog{display:flex;gap:1px}
+.fm-tog .fb{border-radius:0}.fm-tog .fb:first-child{border-radius:6px 0 0 6px}.fm-tog .fb:last-child{border-radius:0 6px 6px 0}
+.fm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(85px,1fr));gap:6px}
+.fm-gi{display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 4px;border-radius:8px;cursor:pointer;transition:all .15s ease;border:1px solid transparent;text-align:center}
+.fm-gi:hover{background:#ffffff06;border-color:var(--border)}
+.fm-gi .fi{font-size:30px}.fm-gi .fn{font-size:9px;font-family:var(--mono);color:var(--text);word-break:break-all;line-height:1.2}
+.fm-list{display:flex;flex-direction:column}
+.fm-lh{display:grid;grid-template-columns:28px 1fr 70px 90px;gap:8px;padding:5px 10px;font-family:var(--mono);font-size:9px;color:var(--text-d);border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:1px}
+.fm-li{display:grid;grid-template-columns:28px 1fr 70px 90px;gap:8px;padding:7px 10px;align-items:center;border-radius:6px;cursor:pointer;transition:all .12s ease;border:1px solid transparent}
+.fm-li:hover{background:#ffffff05}
+.fm-li .fi{font-size:16px;text-align:center}.fm-li .fn{font-size:11px;color:var(--text);font-family:var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fm-li .fn.dir{color:var(--glow);font-weight:500}
+.fm-li .fs,.fm-li .fd{font-size:9px;color:var(--text-d);font-family:var(--mono);text-align:right}
+.fm-st{font-family:var(--mono);font-size:9px;color:var(--text-d);padding:8px 0 0;border-top:1px solid var(--border);margin-top:12px;display:flex;justify-content:space-between}
+
+/* ═══════════════════════════════════════════════════════
+   🎂 BIRTHDAY
+   ═══════════════════════════════════════════════════════ */
+.bd-page{text-align:center;padding:20px 0}
+.bd-title{font-family:var(--hand);font-size:52px;background:linear-gradient(135deg,var(--gold),var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.bd-sub{font-family:var(--mono);font-size:12px;color:var(--text-d);margin-top:6px}
+.bd-cake{font-size:80px;margin:24px 0;animation:fl 3s ease-in-out infinite}
+@keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.cd-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:24px}
+.cd-box{background:var(--bg-3);border:1px solid var(--border);border-radius:12px;padding:16px 6px;transition:all .2s ease}
+.cd-box:hover{border-color:var(--gold);transform:translateY(-2px)}
+.cd-n{font-size:30px;font-weight:800;font-family:var(--disp);color:var(--gold)}
+.cd-l{font-size:9px;color:var(--text-d);font-family:var(--mono);text-transform:uppercase;letter-spacing:2px;margin-top:3px}
+.bd-wish{margin-top:22px;font-family:var(--hand);font-size:22px;color:var(--pink);line-height:1.6}
+
+/* ═══════════════════════════════════════════════════════
+   💖 LOVE
+   ═══════════════════════════════════════════════════════ */
+.love{text-align:center;padding:20px 0;position:relative}
+.love-h{font-size:100px;animation:hb 1.2s ease-in-out infinite}
+@keyframes hb{0%{transform:scale(1)}14%{transform:scale(1.15)}28%{transform:scale(1)}42%{transform:scale(1.1)}56%{transform:scale(1)}}
+.love-t{font-family:var(--hand);font-size:46px;color:var(--pink);margin-top:12px}
+.love-letter{max-width:420px;margin:22px auto 0;font-family:var(--hand);font-size:20px;color:var(--text);line-height:2;text-align:left;background:var(--bg-3);border:1px solid var(--border);border-radius:14px;padding:26px;position:relative}
+.love-letter::before{content:'💌';position:absolute;top:-16px;left:18px;font-size:28px}
+.fh{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.fh span{position:absolute;animation:fUp 7s ease-in infinite;opacity:0}
+@keyframes fUp{0%{opacity:0;transform:translateY(100%) scale(.5)}8%{opacity:.8}85%{opacity:.2}100%{opacity:0;transform:translateY(-100vh) scale(1.3) rotate(25deg)}}
+
+/* ═══════════════════════════════════════════════════════
+   📸 PHOTOS (Masonry) + Lightbox
+   ═══════════════════════════════════════════════════════
+
+   🖼️ HOW TO ADD YOUR PHOTOS:
+   ──────────────────────────
+   Find each <div class="ph"> placeholder below.
+   Replace the gradient background with an <img> tag:
+
+   BEFORE (placeholder):
+     <div class="ph" style="height:200px;background:linear-gradient(...)">
+       <span class="ph-l">📷 Photo 1</span>
+     </div>
+
+   AFTER (your real image):
+     <div class="ph" style="height:auto">
+       <img src="photos/my-photo.jpg" alt="My photo" style="width:100%;display:block;border-radius:10px">
+     </div>
+
+   Or with online URL:
+     <div class="ph" style="height:auto">
+       <img src="https://i.imgur.com/xxxxx.jpg" alt="desc" style="width:100%;display:block;border-radius:10px">
+     </div>
+   ═══════════════════════════════════════════════════════ */
+.ph-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.ph-bar h3{font-size:14px;font-weight:600;color:var(--text-b)}
+.ph-cnt{font-family:var(--mono);font-size:10px;color:var(--text-d)}
+.masonry{columns:3;column-gap:10px}
+.m-item{break-inside:avoid;margin-bottom:10px;border-radius:10px;overflow:hidden;border:1px solid var(--border);background:var(--bg-3);cursor:pointer;transition:all .25s var(--ease);position:relative}
+.m-item:hover{border-color:var(--glow);transform:scale(1.02);box-shadow:0 8px 30px #00000066}
+.ph{width:100%;display:flex;align-items:center;justify-content:center;color:var(--text-d);font-family:var(--mono);font-size:10px;position:relative;overflow:hidden;border-radius:10px}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph .ph-l{position:absolute;background:#00000088;padding:4px 10px;border-radius:4px;font-size:10px;color:var(--text);backdrop-filter:blur(4px)}
+.lbox{position:fixed;inset:0;background:#000000ee;z-index:99998;display:none;align-items:center;justify-content:center;backdrop-filter:blur(10px);cursor:pointer}
+.lbox.on{display:flex}
+.lb-in{max-width:85%;max-height:85%;background:var(--bg-3);border:1px solid var(--border);border-radius:16px;display:flex;align-items:center;justify-content:center;padding:24px;font-family:var(--mono);font-size:13px;color:var(--text-d);min-width:300px;min-height:200px}
+.lb-x{position:absolute;top:20px;right:30px;font-size:28px;color:var(--text);cursor:pointer;transition:color .2s ease}
+.lb-x:hover{color:var(--glow)}
+
+/* ═══════════════════════════════════════════════════════
+   🎵 MUSIC
+   ═══════════════════════════════════════════════════════ */
+.mp{background:var(--bg-3);border:1px solid var(--border);border-radius:16px;padding:28px;text-align:center}
+.disc{width:150px;height:150px;border-radius:50%;background:conic-gradient(from 0deg,var(--glow),var(--blue),var(--purple),var(--pink),var(--glow));margin:0 auto 18px;animation:spin 4s linear infinite;display:flex;align-items:center;justify-content:center;box-shadow:0 0 50px #00ffa322}
+.disc::after{content:'🎵';font-size:36px;background:var(--bg-3);width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.disc.paused{animation-play-state:paused}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tn{font-size:16px;font-weight:700;color:var(--text-b)}
+.ta{font-size:12px;color:var(--text-d);margin-top:4px}
+.mbar{width:100%;height:3px;background:var(--border);border-radius:3px;margin:18px 0 10px;overflow:hidden}
+.mfill{height:100%;width:0%;background:linear-gradient(90deg,var(--glow),var(--cyan));border-radius:3px;animation:mProg 12s linear infinite}
+@keyframes mProg{from{width:0%}to{width:100%}}
+.mc{display:flex;justify-content:center;gap:20px;font-size:22px;margin-top:4px}
+.mc span{cursor:pointer;color:var(--text-d);transition:color .15s ease}
+.mc span:hover{color:var(--glow)}
+
+/* ═══════════════════════════════════════════════════════
+   📝 GUESTBOOK
+   ═══════════════════════════════════════════════════════ */
+.gb-list{margin-bottom:18px}
+.gb-e{background:var(--bg-3);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px;transition:border-color .2s ease}
+.gb-e:hover{border-color:var(--border-h)}
+.gb-n{font-weight:600;color:var(--glow);font-size:12px}
+.gb-m{font-size:12px;color:var(--text-d);margin-top:4px;line-height:1.5}
+.gb-d{font-size:9px;color:var(--text-d);font-family:var(--mono);margin-top:5px;opacity:.5}
+.gb-f{display:flex;flex-direction:column;gap:8px}
+.gb-f input,.gb-f textarea{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--rs);padding:10px 14px;color:var(--text);font-family:var(--body);font-size:12px;outline:none;transition:border-color .2s ease}
+.gb-f input:focus,.gb-f textarea:focus{border-color:var(--glow)}
+.gb-f textarea{resize:vertical;min-height:60px}
+.gb-btn{background:var(--glow);color:var(--bg-0);border:none;border-radius:var(--rs);padding:10px 20px;font-weight:700;cursor:pointer;font-family:var(--body);transition:all .2s ease;align-self:flex-start;font-size:12px}
+.gb-btn:hover{background:var(--glow-d);transform:translateY(-1px)}
+
+/* ═══════════════════════════════════════════════════════
+   ⚙️ SETTINGS
+   ═══════════════════════════════════════════════════════ */
+.sg{margin-bottom:22px}
+.sg h3{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--glow);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px}
+.sr{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #ffffff06}
+.sr span{font-size:12px;color:var(--text-d)}
+.tg{width:38px;height:20px;background:var(--border);border-radius:10px;cursor:pointer;position:relative;transition:background .2s ease}
+.tg.on{background:var(--glow)}
+.tg::after{content:'';width:14px;height:14px;background:white;border-radius:50%;position:absolute;top:3px;left:3px;transition:transform .2s ease}
+.tg.on::after{transform:translateX(18px)}
+
+/* ═══════════════════════════════════════════════════════
+   📊 SKILLS CHART (animated bars)
+   ═══════════════════════════════════════════════════════ */
+.skill-bar{margin-bottom:12px}
+.skill-bar .sk-name{font-family:var(--mono);font-size:10px;color:var(--text);margin-bottom:4px;display:flex;justify-content:space-between}
+.skill-bar .sk-name span{color:var(--glow)}
+.sk-track{height:6px;background:var(--bg-0);border-radius:3px;overflow:hidden}
+.sk-fill{height:100%;border-radius:3px;transition:width 1.5s cubic-bezier(.4,0,.2,1);width:0%}
+
+/* ═══════════════════════════════════════════════════════
+   🏆 ACHIEVEMENTS
+   ═══════════════════════════════════════════════════════ */
+.ach{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.ach-card{background:var(--bg-3);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center;transition:all .25s var(--ease)}
+.ach-card:hover{border-color:var(--gold);transform:translateY(-2px)}
+.ach-card .ach-i{font-size:32px;margin-bottom:8px}
+.ach-card h4{font-size:12px;font-weight:700;color:var(--text-b);margin-bottom:4px}
+.ach-card p{font-size:10px;color:var(--text-d);line-height:1.5}
+
+/* ═══════════════════════════════════════════════════════
+   📞 CONTACT
+   ═══════════════════════════════════════════════════════ */
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.c-card{background:var(--bg-3);border:1px solid var(--border);border-radius:12px;padding:18px;display:flex;align-items:center;gap:14px;transition:all .25s var(--ease);cursor:pointer;text-decoration:none;color:var(--text)}
+.c-card:hover{border-color:var(--glow);transform:translateY(-2px);box-shadow:0 8px 24px #00ffa310}
+.c-card .c-i{font-size:28px}
+.c-card .c-label{font-size:10px;color:var(--text-d);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px}
+.c-card .c-val{font-size:13px;color:var(--text-b);margin-top:2px}
+
+/* ═══════════════════════════════════════════════════════
+   📟 TASKBAR
+   ═══════════════════════════════════════════════════════ */
+#bar{height:var(--bar-h);background:linear-gradient(180deg,var(--bg-2) 0%,var(--bg-1) 100%);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 14px;position:relative;z-index:100}
+.bar-start{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--glow);background:var(--glow-bg2);border:1px solid #00ffa330;border-radius:8px;padding:7px 16px;cursor:pointer;transition:all .2s ease;letter-spacing:1px}
+.bar-start:hover{background:#00ffa325;box-shadow:0 0 16px #00ffa320}
+.bar-apps{flex:1;display:flex;gap:3px;margin-left:10px;overflow-x:auto}
+.bar-app{font-size:10px;font-family:var(--mono);color:var(--text-d);padding:6px 12px;border-radius:6px;cursor:pointer;white-space:nowrap;transition:all .15s ease;border:1px solid transparent}
+.bar-app:hover{background:#ffffff06}
+.bar-app.on{background:var(--glow-bg2);color:var(--glow);border-color:#00ffa325}
+.bar-clock{font-family:var(--mono);font-size:10px;color:var(--text-d);text-align:right;min-width:76px;line-height:1.5}
+
+/* ═══════════════════════════════════════════════════════
+   📋 START MENU
+   ═══════════════════════════════════════════════════════ */
+#smenu{position:absolute;bottom:calc(var(--bar-h) + 10px);left:14px;width:300px;background:var(--bg-glass);border:1px solid var(--border);border-radius:16px;padding:14px;box-shadow:0 24px 80px #000000cc;z-index:200;display:none;backdrop-filter:blur(20px);max-height:80vh;overflow-y:auto}
+#smenu.on{display:block;animation:wIn .25s cubic-bezier(.16,1,.3,1)}
+.sm-hd{padding:10px 12px;border-bottom:1px solid var(--border);margin-bottom:8px}
+.sm-hd h3{font-family:var(--disp);font-size:14px;font-weight:700;color:var(--glow)}
+.sm-hd p{font-size:10px;color:var(--text-d);font-family:var(--mono)}
+.sm-i{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:8px;cursor:pointer;transition:background .15s ease}
+.sm-i:hover{background:var(--glow-bg)}
+.sm-i .si{font-size:20px}.sm-i .sl{font-size:12px;font-weight:500}.sm-i .sd{font-size:9px;color:var(--text-d);font-family:var(--mono)}
+
+/* ═══════════════════════════════════════════════════════
+   🖱️ CONTEXT MENU
+   ═══════════════════════════════════════════════════════ */
+.ctx{position:fixed;background:var(--bg-glass);border:1px solid var(--border);border-radius:12px;padding:6px;min-width:190px;box-shadow:0 12px 48px #000000cc;z-index:10000;display:none;backdrop-filter:blur(16px)}
+.ctx.on{display:block}
+.ctx-i{padding:8px 14px;font-size:11px;color:var(--text);border-radius:6px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .1s ease}
+.ctx-i:hover{background:var(--glow-bg2);color:var(--glow)}
+.ctx-d{height:1px;background:var(--border);margin:4px 8px}
+
+/* 🔔 NOTIFICATION */
+.notif{position:fixed;top:20px;right:20px;background:var(--bg-glass);border:1px solid var(--border);border-radius:12px;padding:12px 20px;font-size:12px;color:var(--text);box-shadow:0 10px 40px #000000aa;z-index:99990;display:flex;align-items:center;gap:10px;backdrop-filter:blur(16px);opacity:0;pointer-events:none;transform:translateX(100px);transition:all .4s var(--ease)}
+.notif.on{opacity:1;pointer-events:auto;transform:translateX(0)}
+
+/* ═══════════════════════════════════════════════════════
+   📅 TIMELINE
+   ═══════════════════════════════════════════════════════ */
+.tl-line{position:relative;padding-left:32px}
+.tl-line::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--glow),var(--purple),var(--pink));border-radius:2px}
+.tl-item{position:relative;margin-bottom:24px;animation:fS .4s ease}
+.tl-item::before{content:'';position:absolute;left:-26px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--bg-0);border:2px solid var(--glow);z-index:1;transition:all .2s ease}
+.tl-item:hover::before{background:var(--glow);box-shadow:0 0 12px var(--glow)}
+.tl-item.done::before{background:var(--glow);border-color:var(--glow)}
+.tl-item.current::before{background:var(--gold);border-color:var(--gold);box-shadow:0 0 12px var(--gold);animation:pls 2s ease infinite}
+.tl-year{font-family:var(--disp);font-size:18px;font-weight:800;color:var(--glow);margin-bottom:4px}
+.tl-title{font-size:13px;font-weight:700;color:var(--text-b)}
+.tl-desc{font-size:11px;color:var(--text-d);margin-top:3px;line-height:1.6}
+.tl-tag{display:inline-block;font-size:9px;font-family:var(--mono);padding:2px 8px;border-radius:10px;margin-top:6px;border:1px solid var(--border);color:var(--text-d)}
+.tl-tag.g{border-color:var(--glow);color:var(--glow)}
+.tl-tag.p{border-color:var(--pink);color:var(--pink)}
+.tl-tag.b{border-color:var(--blue);color:var(--blue)}
+
+/* ═══════════════════════════════════════════════════════
+   📋 YEAR PLANNER
+   ═══════════════════════════════════════════════════════ */
+.plan-q{margin-bottom:22px}
+.plan-q-title{font-family:var(--disp);font-size:15px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.plan-q-title .q-badge{font-size:10px;font-family:var(--mono);padding:3px 10px;border-radius:12px;font-weight:600}
+.q1 .q-badge{background:#00ffa320;color:var(--glow)}
+.q2 .q-badge{background:#4d9fff20;color:var(--blue)}
+.q3 .q-badge{background:#a855f720;color:var(--purple)}
+.q4 .q-badge{background:#ff4da620;color:var(--pink)}
+.plan-item{display:flex;align-items:flex-start;gap:10px;padding:8px 12px;background:var(--bg-3);border:1px solid var(--border);border-radius:10px;margin-bottom:6px;transition:all .2s var(--ease)}
+.plan-item:hover{border-color:var(--glow);transform:translateX(4px)}
+.plan-chk{width:18px;height:18px;border-radius:5px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;margin-top:1px;cursor:pointer;transition:all .2s ease}
+.plan-chk.done{background:var(--glow);border-color:var(--glow);color:var(--bg-0)}
+.plan-chk:hover{border-color:var(--glow)}
+.plan-text{font-size:12px;color:var(--text);line-height:1.5}
+.plan-text.struck{text-decoration:line-through;color:var(--text-d)}
+.plan-meta{font-size:9px;font-family:var(--mono);color:var(--text-d);margin-top:2px}
+.plan-progress{margin-top:8px}
+.plan-progress .pp-bar{height:6px;background:var(--bg-0);border-radius:3px;overflow:hidden;margin-top:4px}
+.plan-progress .pp-fill{height:100%;border-radius:3px;transition:width 1s var(--ease)}
+.plan-progress .pp-label{font-family:var(--mono);font-size:9px;color:var(--text-d);display:flex;justify-content:space-between}
+
+/* ═══════════════════════════════════════════════════════
+   📆 CALENDAR
+   ═══════════════════════════════════════════════════════ */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.cal-header h3{font-family:var(--disp);font-size:18px;font-weight:700;color:var(--text-b)}
+.cal-nav{display:flex;gap:6px}
+.cal-btn{background:var(--bg-3);border:1px solid var(--border);border-radius:8px;padding:6px 12px;color:var(--text-d);font-size:14px;cursor:pointer;transition:all .15s ease;font-family:var(--mono)}
+.cal-btn:hover{border-color:var(--glow);color:var(--glow)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-day-h{text-align:center;font-family:var(--mono);font-size:9px;color:var(--text-d);padding:6px 0;text-transform:uppercase;letter-spacing:1px}
+.cal-day{text-align:center;padding:8px 4px;border-radius:8px;font-size:12px;font-family:var(--mono);color:var(--text-d);cursor:pointer;transition:all .15s ease;border:1px solid transparent;position:relative}
+.cal-day:hover{background:#ffffff08;border-color:var(--border)}
+.cal-day.today{background:var(--glow-bg2);color:var(--glow);font-weight:700;border-color:var(--glow)}
+.cal-day.other{opacity:.25}
+.cal-day.event::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--pink)}
+.cal-day.selected{background:var(--blue);color:var(--text-b);border-color:var(--blue);opacity:1}
+.cal-events{margin-top:16px}
+.cal-ev{background:var(--bg-3);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:6px;display:flex;align-items:center;gap:10px;transition:all .2s ease}
+.cal-ev:hover{border-color:var(--glow)}
+.cal-ev .ev-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.cal-ev .ev-title{font-size:12px;color:var(--text-b);font-weight:600}
+.cal-ev .ev-time{font-size:10px;color:var(--text-d);font-family:var(--mono)}
+
+/* ═══════════════════════════════════════════════════════
+   🧮 CALCULATOR
+   ═══════════════════════════════════════════════════════ */
+.calc{max-width:300px;margin:0 auto}
+.calc-display{background:var(--bg-0);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:12px;text-align:right;min-height:70px;display:flex;flex-direction:column;justify-content:flex-end}
+.calc-expr{font-family:var(--mono);font-size:12px;color:var(--text-d);min-height:18px;word-break:break-all}
+.calc-result{font-family:var(--disp);font-size:32px;font-weight:800;color:var(--text-b);margin-top:4px}
+.calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.calc-key{background:var(--bg-3);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;font-family:var(--mono);font-size:16px;font-weight:600;color:var(--text);cursor:pointer;transition:all .12s ease;user-select:none}
+.calc-key:hover{background:var(--bg-4);border-color:var(--border-h);transform:scale(1.04)}
+.calc-key:active{transform:scale(0.95)}
+.calc-key.op{color:var(--glow);border-color:#00ffa330}
+.calc-key.op:hover{background:var(--glow-bg2)}
+.calc-key.eq{background:var(--glow);color:var(--bg-0);border-color:var(--glow)}
+.calc-key.eq:hover{background:var(--glow-d);transform:scale(1.04)}
+.calc-key.del{color:var(--red);border-color:#ef444430}
+.calc-key.del:hover{background:#ef444415}
+.calc-key.span2{grid-column:span 2}
+
+/* ═══════════════════════════════════════════════════════
+   📝 NOTEPAD
+   ═══════════════════════════════════════════════════════ */
+.notepad-area{width:100%;min-height:300px;background:var(--bg-0);border:1px solid var(--border);border-radius:10px;padding:16px;font-family:var(--mono);font-size:13px;color:var(--text);line-height:1.8;resize:vertical;outline:none;caret-color:var(--glow)}
+.notepad-area:focus{border-color:var(--glow)}
+.notepad-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.notepad-bar .nb-info{font-family:var(--mono);font-size:10px;color:var(--text-d)}
+
+/* ═══════════════════════════════════════════════════════
+   🎮 MINI GAME (Snake)
+   ═══════════════════════════════════════════════════════ */
+.game-wrap{text-align:center}
+.game-canvas{background:var(--bg-0);border:1px solid var(--border);border-radius:10px;display:block;margin:0 auto}
+.game-score{font-family:var(--mono);font-size:12px;color:var(--text-d);margin:10px 0}
+.game-score span{color:var(--glow);font-weight:700;font-size:18px}
+.game-btn{background:var(--glow);color:var(--bg-0);border:none;border-radius:8px;padding:10px 24px;font-weight:700;cursor:pointer;font-family:var(--body);font-size:13px;transition:all .2s ease;margin:6px 4px}
+.game-btn:hover{background:var(--glow-d);transform:translateY(-1px)}
+.game-btn.sec{background:var(--bg-3);color:var(--text);border:1px solid var(--border)}
+.game-dpad{display:grid;grid-template-columns:repeat(3,48px);gap:4px;justify-content:center;margin-top:10px}
+.game-dpad button{background:var(--bg-3);border:1px solid var(--border);border-radius:8px;padding:10px;font-size:16px;cursor:pointer;color:var(--text);transition:all .12s ease}
+.game-dpad button:hover{border-color:var(--glow);color:var(--glow)}
+.game-dpad button:active{transform:scale(.9)}
+
+/* ═══════════════════════════════════════════════════════
+   ⏱️ STOPWATCH / POMODORO
+   ═══════════════════════════════════════════════════════ */
+.sw-display{text-align:center;padding:20px 0}
+.sw-time{font-family:var(--disp);font-size:56px;font-weight:800;color:var(--text-b);letter-spacing:2px}
+.sw-label{font-family:var(--mono);font-size:11px;color:var(--text-d);margin-top:4px;letter-spacing:1px}
+.sw-btns{display:flex;gap:8px;justify-content:center;margin-top:16px}
+.sw-btn{padding:10px 22px;border-radius:10px;font-weight:700;cursor:pointer;font-family:var(--body);font-size:12px;border:1px solid var(--border);transition:all .2s ease;background:var(--bg-3);color:var(--text)}
+.sw-btn:hover{transform:translateY(-1px)}
+.sw-btn.start{background:var(--glow);color:var(--bg-0);border-color:var(--glow)}
+.sw-btn.stop{background:var(--red);color:white;border-color:var(--red)}
+.sw-btn.start:hover{background:var(--glow-d)}
+.pomo-modes{display:flex;gap:4px;justify-content:center;margin-bottom:16px;background:var(--bg-1);padding:4px;border-radius:10px}
+.pomo-mode{padding:8px 14px;font-family:var(--mono);font-size:10px;border-radius:8px;cursor:pointer;color:var(--text-d);transition:all .2s ease}
+.pomo-mode:hover{color:var(--text)}
+.pomo-mode.on{background:var(--glow-bg2);color:var(--glow);font-weight:600}
+.sw-ring{width:200px;height:200px;border-radius:50%;border:4px solid var(--border);margin:0 auto;display:flex;align-items:center;justify-content:center;position:relative}
+.sw-ring svg{position:absolute;inset:-4px;transform:rotate(-90deg)}
+.sw-ring circle{fill:none;stroke-width:4;stroke-linecap:round}
+
+/* ═══════════════════════════════════════════════════════
+   🌤️ WEATHER
+   ═══════════════════════════════════════════════════════ */
+.weather-card{background:var(--bg-3);border:1px solid var(--border);border-radius:16px;padding:24px;text-align:center}
+.w-temp{font-family:var(--disp);font-size:56px;font-weight:800;color:var(--text-b)}
+.w-icon{font-size:64px;margin:10px 0}
+.w-desc{font-size:14px;color:var(--text-d);text-transform:capitalize}
+.w-city{font-family:var(--mono);font-size:12px;color:var(--glow);margin-top:6px}
+.w-details{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
+.w-det{background:var(--bg-0);border-radius:10px;padding:12px;text-align:center}
+.w-det .wd-val{font-size:16px;font-weight:700;color:var(--text-b)}
+.w-det .wd-lbl{font-size:9px;font-family:var(--mono);color:var(--text-d);margin-top:2px;text-transform:uppercase}
+
+/* ═══════════════════════════════════════════════════════
+   🎯 HABIT TRACKER
+   ═══════════════════════════════════════════════════════ */
+.habit-list{display:flex;flex-direction:column;gap:8px}
+.habit-row{background:var(--bg-3);border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:12px;transition:all .2s var(--ease)}
+.habit-row:hover{border-color:var(--glow)}
+.habit-icon{font-size:22px}
+.habit-info{flex:1}
+.habit-name{font-size:13px;font-weight:600;color:var(--text-b)}
+.habit-streak{font-family:var(--mono);font-size:10px;color:var(--text-d);margin-top:2px}
+.habit-streak span{color:var(--gold)}
+.habit-dots{display:flex;gap:3px}
+.habit-dot{width:22px;height:22px;border-radius:4px;background:var(--bg-0);border:1px solid var(--border);cursor:pointer;transition:all .15s ease;display:flex;align-items:center;justify-content:center;font-size:9px;color:transparent}
+.habit-dot:hover{border-color:var(--glow)}
+.habit-dot.done{background:var(--glow);border-color:var(--glow);color:var(--bg-0)}
+.habit-days{display:flex;gap:3px;margin-bottom:4px}
+.habit-days span{width:22px;text-align:center;font-family:var(--mono);font-size:8px;color:var(--text-d)}
+
+/* ═══════════════════════════════════════════════════════
+   📰 BLOG / THOUGHTS
+   ═══════════════════════════════════════════════════════ */
+.blog-post{background:var(--bg-3);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:12px;transition:all .25s var(--ease)}
+.blog-post:hover{border-color:var(--glow);transform:translateY(-2px)}
+.blog-date{font-family:var(--mono);font-size:10px;color:var(--glow-d);margin-bottom:6px}
+.blog-title{font-size:15px;font-weight:700;color:var(--text-b);margin-bottom:6px}
+.blog-body{font-size:12px;color:var(--text-d);line-height:1.7}
+.blog-tags{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap}
+.blog-tag{font-size:9px;font-family:var(--mono);padding:2px 8px;border-radius:10px;background:var(--bg-0);color:var(--text-d);border:1px solid var(--border)}
+
+/* ═══════════════════════════════════════════════════════
+   💬 CHAT SIMULATOR
+   ═══════════════════════════════════════════════════════ */
+.chat-box{display:flex;flex-direction:column;gap:8px;max-height:340px;overflow-y:auto;margin-bottom:12px;padding-right:4px}
+.chat-msg{max-width:80%;padding:10px 14px;border-radius:14px;font-size:12px;line-height:1.6;animation:fS .3s ease}
+.chat-msg.them{background:var(--bg-3);border:1px solid var(--border);color:var(--text);align-self:flex-start;border-bottom-left-radius:4px}
+.chat-msg.me{background:var(--glow);color:var(--bg-0);align-self:flex-end;border-bottom-right-radius:4px;font-weight:500}
+.chat-msg .chat-name{font-family:var(--mono);font-size:9px;color:var(--text-d);margin-bottom:3px}
+.chat-msg.me .chat-name{color:#00000066}
+.chat-typing{font-size:11px;color:var(--text-d);font-style:italic;padding:4px 0}
+.chat-input-row{display:flex;gap:6px}
+.chat-input{flex:1;background:var(--bg-3);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-family:var(--body);font-size:12px;outline:none}
+.chat-input:focus{border-color:var(--glow)}
+.chat-send{background:var(--glow);color:var(--bg-0);border:none;border-radius:10px;padding:10px 16px;font-weight:700;cursor:pointer;font-size:12px}
+
+/* ═══════════════════════════════════════════════════════
+   🎨 DRAWING BOARD
+   ═══════════════════════════════════════════════════════ */
+.draw-toolbar{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center}
+.draw-color{width:24px;height:24px;border-radius:50%;border:2px solid var(--border);cursor:pointer;transition:transform .12s ease}
+.draw-color:hover{transform:scale(1.2)}
+.draw-color.on{border-color:var(--text-b);transform:scale(1.15)}
+.draw-size{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;color:var(--text-d)}
+.draw-size input{width:60px;accent-color:var(--glow)}
+.draw-canvas{background:var(--bg-0);border:1px solid var(--border);border-radius:10px;cursor:crosshair;display:block;width:100%;touch-action:none}
+
+/* ═══════════════════════════════════════════════════════
+   📧 EMAIL FORM
+   ═══════════════════════════════════════════════════════ */
+.email-form{display:flex;flex-direction:column;gap:10px}
+.email-form input,.email-form textarea{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--rs);padding:12px 16px;color:var(--text);font-family:var(--body);font-size:13px;outline:none;transition:border-color .2s ease}
+.email-form input:focus,.email-form textarea:focus{border-color:var(--glow)}
+.email-form textarea{min-height:120px;resize:vertical}
+.email-send{background:var(--glow);color:var(--bg-0);border:none;border-radius:var(--rs);padding:12px 24px;font-weight:700;cursor:pointer;font-family:var(--body);font-size:13px;transition:all .2s ease;align-self:flex-start}
+.email-send:hover{background:var(--glow-d);transform:translateY(-1px)}
+
+/* ═══════════════════════════════════════════════════════
+   🗣️ TESTIMONIALS
+   ═══════════════════════════════════════════════════════ */
+.testi-card{background:var(--bg-3);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:12px;transition:all .25s var(--ease);position:relative}
+.testi-card:hover{border-color:var(--glow);transform:translateY(-2px)}
+.testi-card::before{content:'"';position:absolute;top:10px;right:18px;font-size:48px;color:var(--glow);opacity:.15;font-family:var(--disp);font-weight:800;line-height:1}
+.testi-text{font-size:13px;color:var(--text);line-height:1.7;font-style:italic}
+.testi-author{display:flex;align-items:center;gap:10px;margin-top:12px}
+.testi-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--glow),var(--blue));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--bg-0)}
+.testi-name{font-size:12px;font-weight:700;color:var(--text-b)}
+.testi-role{font-size:10px;color:var(--text-d);font-family:var(--mono)}
+
+/* ═══════════════════════════════════════════════════════
+   📑 DOWNLOAD RESUME
+   ═══════════════════════════════════════════════════════ */
+.dl-card{background:var(--bg-3);border:1px solid var(--border);border-radius:16px;padding:30px;text-align:center}
+.dl-icon{font-size:64px;margin-bottom:16px}
+.dl-title{font-family:var(--disp);font-size:20px;font-weight:700;color:var(--text-b)}
+.dl-sub{font-size:12px;color:var(--text-d);margin-top:6px}
+.dl-btn{display:inline-block;background:var(--glow);color:var(--bg-0);border:none;border-radius:10px;padding:14px 32px;font-weight:700;cursor:pointer;font-family:var(--body);font-size:14px;margin-top:20px;transition:all .2s ease;text-decoration:none}
+.dl-btn:hover{background:var(--glow-d);transform:translateY(-2px);box-shadow:0 8px 24px #00ffa330}
+.dl-meta{display:flex;justify-content:center;gap:20px;margin-top:16px}
+.dl-meta span{font-family:var(--mono);font-size:10px;color:var(--text-d)}
+
+/* ═══════════════════════════════════════════════════════
+   🌍 3D WORLD
+   ═══════════════════════════════════════════════════════ */
+.world-canvas{width:100%!important;height:100%!important;display:block;border-radius:0;cursor:grab}
+.world-canvas:active{cursor:grabbing}
+.world-hud{position:absolute;bottom:14px;left:14px;right:14px;display:flex;gap:6px;flex-wrap:wrap;z-index:10}
+.world-btn{background:#10111ddd;border:1px solid var(--border);border-radius:8px;padding:7px 12px;font-family:var(--mono);font-size:9px;color:var(--text);cursor:pointer;transition:all .2s ease;backdrop-filter:blur(12px);user-select:none}
+.world-btn:hover{border-color:var(--glow);color:var(--glow);background:#00ffa320}
+.world-btn.active{background:var(--glow-bg2);color:var(--glow);border-color:var(--glow)}
+.world-msg{position:absolute;top:14px;left:50%;transform:translateX(-50%);background:#10111dee;border:1px solid var(--border);border-radius:12px;padding:10px 22px;font-family:var(--hand);font-size:20px;color:var(--pink);backdrop-filter:blur(12px);z-index:10;pointer-events:none;opacity:0;transition:opacity .5s ease;white-space:nowrap}
+.world-msg.show{opacity:1}
+.world-loc{position:absolute;top:14px;left:14px;background:#10111dee;border:1px solid var(--border);border-radius:10px;padding:8px 14px;font-family:var(--mono);font-size:10px;color:var(--glow);backdrop-filter:blur(12px);z-index:10;display:flex;align-items:center;gap:6px}
+.world-loc .wl-dot{width:6px;height:6px;border-radius:50%;background:var(--glow);animation:pls 2s ease infinite}
+.world-expand{position:absolute;top:14px;right:14px;background:#10111dee;border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:16px;cursor:pointer;z-index:10;color:var(--text);transition:all .2s ease;backdrop-filter:blur(12px)}
+.world-expand:hover{border-color:var(--glow);color:var(--glow)}
+.world-places{position:absolute;right:14px;top:50px;background:#10111dee;border:1px solid var(--border);border-radius:12px;padding:8px;z-index:10;backdrop-filter:blur(12px);display:flex;flex-direction:column;gap:3px}
+.world-place{padding:7px 12px;border-radius:8px;font-family:var(--mono);font-size:9px;color:var(--text-d);cursor:pointer;transition:all .15s ease;display:flex;align-items:center;gap:6px}
+.world-place:hover{background:#ffffff08;color:var(--text)}
+.world-place.active{background:var(--glow-bg2);color:var(--glow)}
+/* Fullscreen override */
+.w.fullscreen{position:fixed!important;inset:0!important;width:100%!important;height:100%!important;border-radius:0!important;z-index:9990!important}
+
+/* ═══════════════════════════════════════════════════════
+   📱 RESPONSIVE
+   ═══════════════════════════════════════════════════════ */
+@media(max-width:768px){
+  .w{width:100%!important;height:calc(100% - 10px)!important;left:0!important;top:5px!important;border-radius:14px 14px 0 0;min-width:unset}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .cd-grid{grid-template-columns:repeat(2,1fr)}
+  .pg{grid-template-columns:1fr}
+  .masonry{columns:2}
+  .contact-grid{grid-template-columns:1fr}
+  .ach{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ BOOT SCREEN ═══════════ -->
+<div id="boot">
+  <div class="b-logo">JOTHIESH</div>
+  <div class="b-sub">Personal Operating System v3.0</div>
+  <div class="b-lines" id="b-txt"></div>
+  <div class="b-bar"><div class="b-fill" id="b-fill"></div></div>
+</div>
+
+<!-- ═══════════ PARTICLES ═══════════ -->
+<canvas id="particles"></canvas>
+
+<!-- ═══════════ DESKTOP ═══════════ -->
+<div id="desktop">
+  <div class="di">
+    <div class="d-i" onclick="O('about')"><span class="ic">👤</span><span class="lb">About</span></div>
+    <div class="d-i" onclick="O('resume')"><span class="ic">📄</span><span class="lb">Resume</span></div>
+    <div class="d-i" onclick="O('projects')"><span class="ic">🚀</span><span class="lb">Projects</span></div>
+    <div class="d-i" onclick="O('skills')"><span class="ic">📊</span><span class="lb">Skills</span></div>
+    <div class="d-i" onclick="O('term')"><span class="ic">⬛</span><span class="lb">Terminal</span></div>
+    <div class="d-i" onclick="O('fm')"><span class="ic">🗂️</span><span class="lb">Files</span></div>
+    <div class="d-i" onclick="O('photos')"><span class="ic">📸</span><span class="lb">Photos</span></div>
+    <div class="d-i" onclick="O('birthday')"><span class="ic">🎂</span><span class="lb">Birthday</span><span class="badge"></span></div>
+    <div class="d-i" onclick="O('love')"><span class="ic">💖</span><span class="lb">Love</span><span class="badge"></span></div>
+    <div class="d-i" onclick="O('music')"><span class="ic">🎵</span><span class="lb">Music</span></div>
+    <div class="d-i" onclick="O('contact')"><span class="ic">📞</span><span class="lb">Contact</span></div>
+    <div class="d-i" onclick="O('gb')"><span class="ic">📝</span><span class="lb">Guestbook</span></div>
+    <div class="d-i" onclick="O('settings')"><span class="ic">⚙️</span><span class="lb">Settings</span></div>
+    <div class="d-i" onclick="O('achieve')"><span class="ic">🏆</span><span class="lb">Achievements</span></div>
+    <div class="d-i" onclick="O('timeline')"><span class="ic">⏳</span><span class="lb">Timeline</span></div>
+    <div class="d-i" onclick="O('planner')"><span class="ic">📋</span><span class="lb">2026 Plan</span><span class="badge"></span></div>
+    <div class="d-i" onclick="O('calendar')"><span class="ic">📆</span><span class="lb">Calendar</span></div>
+    <div class="d-i" onclick="O('calc')"><span class="ic">🧮</span><span class="lb">Calculator</span></div>
+    <div class="d-i" onclick="O('notepad')"><span class="ic">📝</span><span class="lb">Notepad</span></div>
+    <div class="d-i" onclick="O('snake')"><span class="ic">🎮</span><span class="lb">Snake Game</span></div>
+    <div class="d-i" onclick="O('pomo')"><span class="ic">⏱️</span><span class="lb">Pomodoro</span></div>
+    <div class="d-i" onclick="O('weather')"><span class="ic">🌤️</span><span class="lb">Weather</span></div>
+    <div class="d-i" onclick="O('habits')"><span class="ic">🎯</span><span class="lb">Habits</span></div>
+    <div class="d-i" onclick="O('blog')"><span class="ic">📰</span><span class="lb">Blog</span></div>
+    <div class="d-i" onclick="O('chat')"><span class="ic">💬</span><span class="lb">Chat</span></div>
+    <div class="d-i" onclick="O('draw')"><span class="ic">🎨</span><span class="lb">Draw</span></div>
+    <div class="d-i" onclick="O('emailme')"><span class="ic">📧</span><span class="lb">Email Me</span></div>
+    <div class="d-i" onclick="O('testi')"><span class="ic">🗣️</span><span class="lb">Testimonials</span></div>
+    <div class="d-i" onclick="O('dlresume')"><span class="ic">📑</span><span class="lb">Download CV</span></div>
+    <div class="d-i" onclick="O('world3d')"><span class="ic">🌍</span><span class="lb">Our World</span><span class="badge"></span></div>
+  </div>
+
+  <!-- ═══════════ ABOUT WINDOW (Personal Bento) ═══════════ -->
+  <div class="w" id="w-about" style="width:620px;height:580px;top:20px;left:100px">
+    <div class="wb" onmousedown="drag(event,'w-about')">
+      <div class="wd"><div class="dd c" onclick="C('about')"></div><div class="dd m" onclick="M('about')"></div><div class="dd x"></div></div>
+      <span class="wt">about — jothiesh.click/about</span><button class="wclose" onclick="C('about')">✕</button>
+    </div>
+    <div class="wc">
+      <div class="url"><span class="lk">🔒</span> jothiesh.click/about</div>
+
+      <div class="bento">
+
+        <!-- Profile Card (large) -->
+        <div class="bento-card span2 bento-profile">
+          <!-- ╔═══════════════════════════════════════╗
+               ║  👤 YOUR PHOTO: Replace <div> with:   ║
+               ║  <img class="avatar"                   ║
+               ║    src="your-photo.jpg" alt="Jothiesh"> ║
+               ╚═══════════════════════════════════════╝ -->
+          <div class="avatar">J</div>
+          <div class="b-name">JOTHIESH</div>
+          <div class="b-tagline">Developer · Dreamer · Coffee Addict</div>
+          <div style="margin-top:10px;font-size:12px;color:var(--text-d)">📍 Bangalore, India</div>
+        </div>
+
+        <!-- Current Status -->
+        <div class="bento-card">
+          <div class="b-label">📡 Status</div>
+          <div class="b-value"><span class="status-dot online"></span>Online</div>
+          <div class="mood-bar">
+            <span class="mood-tag">💻 Coding</span>
+            <span class="mood-tag">☕ Caffeinated</span>
+          </div>
+          <div style="margin-top:10px;font-size:11px;color:var(--text-d)">
+            🕐 <span id="about-time"></span>
+          </div>
+        </div>
+
+        <!-- Current Mood -->
+        <div class="bento-card">
+          <div class="b-label">🎭 Current Mood</div>
+          <div style="font-size:48px;text-align:center;margin:8px 0">😊</div>
+          <div class="b-sub" style="text-align:center">Feeling productive & grateful</div>
+        </div>
+
+        <!-- Age / Birthday / Zodiac -->
+        <div class="bento-card">
+          <div class="b-label">🎂 Birthday & Zodiac</div>
+          <div class="b-value" style="font-size:20px">
+            <!-- ╔══════════════════════════════╗
+                 ║ CHANGE YOUR BIRTHDAY BELOW   ║
+                 ╚══════════════════════════════╝ -->
+            🎂 Jan 1
+          </div>
+          <div class="b-sub">
+            ♒ Aquarius <!-- Change zodiac -->
+          </div>
+          <div style="margin-top:6px;font-size:20px;font-weight:800;color:var(--gold);font-family:var(--disp)">
+            <!-- Age auto-calculated below by JS -->
+            <span id="my-age">--</span> years old
+          </div>
+        </div>
+
+        <!-- Favorite Quote -->
+        <div class="bento-card span2">
+          <div class="b-label">💬 Favorite Quote</div>
+          <div class="bento-quote">
+            "First, solve the problem. Then, write the code."
+            <div class="q-author">— John Johnson</div>
+          </div>
+        </div>
+
+        <!-- Hobbies & Interests -->
+        <div class="bento-card span2">
+          <div class="b-label">🎯 Hobbies & Interests</div>
+          <div class="interest-pills" style="margin-top:6px">
+            <span class="i-pill">💻 Coding</span>
+            <span class="i-pill">🏏 Cricket</span>
+            <span class="i-pill">🎮 Gaming</span>
+            <span class="i-pill">🎵 Music</span>
+            <span class="i-pill">📱 Android Dev</span>
+            <span class="i-pill">🗺️ Exploring Maps</span>
+            <span class="i-pill">☕ Coffee</span>
+            <span class="i-pill">🎬 Movies</span>
+            <span class="i-pill">📚 Learning</span>
+            <span class="i-pill">🌙 Late Night Coding</span>
+          </div>
+        </div>
+
+        <!-- Favorite Food & Coffee -->
+        <div class="bento-card">
+          <div class="b-label">🍕 Food & Coffee</div>
+          <div class="b-value" style="font-size:12px;line-height:2">
+            ☕ Black Coffee<br>
+            🍕 Pizza lover<br>
+            🍗 Biryani forever<br>
+            🍫 Chocolate addict
+          </div>
+        </div>
+
+        <!-- Music & Movies -->
+        <div class="bento-card span2">
+          <div class="b-label">🎵 Music & Movies</div>
+          <div style="display:flex;gap:16px;margin-top:6px;flex-wrap:wrap">
+            <div style="flex:1;min-width:120px">
+              <div style="font-size:11px;color:var(--glow);font-family:var(--mono);margin-bottom:6px">🎧 LISTENING</div>
+              <div class="b-sub">Lo-fi Beats<br>Tamil Songs<br>AR Rahman<br>Indie Chill</div>
+            </div>
+            <div style="flex:1;min-width:120px">
+              <div style="font-size:11px;color:var(--pink);font-family:var(--mono);margin-bottom:6px">🎬 WATCHING</div>
+              <div class="b-sub">Sci-Fi Movies<br>Tech Documentaries<br>Anime<br>Thriller Series</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Love / Relationship -->
+        <div class="bento-card">
+          <div class="b-label">💖 Love</div>
+          <div class="love-mini">
+            <span class="heart-icon">💖</span>
+            <div class="love-text">
+              Taken ❤️<br>
+              She's my favorite<br>notification 🔔
+            </div>
+          </div>
+        </div>
+
+        <!-- Dream / Bucket List -->
+        <div class="bento-card span2">
+          <div class="b-label">🚀 Bucket List</div>
+          <div style="margin-top:6px">
+            <div class="bucket-item done-text"><span class="check done">✓</span> Build 7 production apps solo</div>
+            <div class="bucket-item done-text"><span class="check done">✓</span> Learn Docker & deploy to AWS</div>
+            <div class="bucket-item done-text"><span class="check done">✓</span> Handle 20,000 GPS devices</div>
+            <div class="bucket-item"><span class="check"></span> Build a startup</div>
+            <div class="bucket-item"><span class="check"></span> Contribute to open source</div>
+            <div class="bucket-item"><span class="check"></span> Travel to Japan 🇯🇵</div>
+            <div class="bucket-item"><span class="check"></span> Build an AI product</div>
+            <div class="bucket-item"><span class="check"></span> Speak at a tech conference</div>
+          </div>
+        </div>
+
+        <!-- Fun fact -->
+        <div class="bento-card">
+          <div class="b-label">🤫 Fun Fact</div>
+          <div style="font-size:32px;text-align:center;margin:6px 0">🦉</div>
+          <div class="b-sub" style="text-align:center">Best code written<br>between 12am–4am</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ RESUME WINDOW (with SPA tabs) ═══════════ -->
+  <div class="w" id="w-resume" style="width:620px;height:560px;top:25px;left:140px">
+    <div class="wb" onmousedown="drag(event,'w-resume')">
+      <div class="wd"><div class="dd c" onclick="C('resume')"></div><div class="dd m" onclick="M('resume')"></div><div class="dd x"></div></div>
+      <span class="wt">resume.pdf — jothiesh.click/resume</span><button class="wclose" onclick="C('resume')">✕</button>
+    </div>
+    <div class="wc">
+      <div class="url"><span class="lk">🔒</span> jothiesh.click/resume</div>
+      <!-- Angular-style tab navigation -->
+      <div class="nav">
+        <a class="on" onclick="tab('resume','exp',this)">Experience</a>
+        <a onclick="tab('resume','edu',this)">Education</a>
+        <a onclick="tab('resume','tech',this)">Tech Stack</a>
+        <a onclick="tab('resume','cert',this)">Certs</a>
+      </div>
+
+      <!-- TAB: Experience -->
+      <div class="view on" id="resume-exp">
+        <div class="exp-card">
+          <h3>R&D Software Engineer</h3>
+          <div class="role">Thinture Technologies — Sole Developer & System Architect</div>
+          <div class="period">May 2024 – Present</div>
+          <ul>
+            <li>Independently designed, developed, containerized (Docker), deployed (AWS), and maintained <strong style="color:var(--glow)">7 production-grade platforms</strong> from scratch</li>
+            <li>Architected GPS fleet tracking handling <strong style="color:var(--glow)">20,000+ concurrent device connections</strong></li>
+            <li>Built MQTT/TCP/IP device communication, WebSocket live tracking, table partitioning</li>
+            <li>Developed Android apps (Kotlin, Jetpack Compose) for speed limiting, geofencing, DMS</li>
+            <li>Managed complete AWS infrastructure: EC2, RDS, VPC, Route 53, S3, IAM, CloudWatch</li>
+            <li>Load tested 20K devices with JMeter; 1,000 admin + 500 dealer simultaneous logins</li>
+          </ul>
+        </div>
+        <div class="exp-card">
+          <h3>Junior Software Developer</h3>
+          <div class="role">6D Technologies Pvt. Ltd</div>
+          <div class="period">March 2022 – December 2022</div>
+          <ul>
+            <li>Developed high-performance Java applications with OOP principles for RESTful APIs</li>
+            <li>Designed relational DB schemas, optimized queries with Hibernate ORM</li>
+            <li>Applied DSA for scalable solutions, reducing response latency</li>
+            <li>Code reviews, debugging, unit testing in Agile/Scrum environment</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- TAB: Education -->
+      <div class="view" id="resume-edu">
+        <div class="rs">
+          <h2>// Education</h2>
+          <div class="ri">
+            <h3>M.Tech — Computer Science & Engineering</h3>
+            <div class="mt">SKP Engineering College · 2023 – 2025</div>
+          </div>
+          <div class="ri">
+            <h3>B.Tech — Computer Science & Engineering</h3>
+            <div class="mt">SKP Engineering College · 2016 – 2020</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: Tech Stack -->
+      <div class="view" id="resume-tech">
+        <div class="rs">
+          <h2>// Languages</h2>
+          <div class="tags">
+            <span class="tag">Java (8-21)</span><span class="tag">Kotlin</span><span class="tag">Python</span><span class="tag">SQL</span><span class="tag">JavaScript</span><span class="tag">HTML5/CSS3</span>
+          </div>
+        </div>
+        <div class="rs">
+          <h2>// Backend & Frameworks</h2>
+          <div class="tags">
+            <span class="tag">Spring Boot</span><span class="tag">Spring MVC</span><span class="tag">Spring Security</span><span class="tag">Spring AI</span><span class="tag">Hibernate/JPA</span><span class="tag">Node.js</span><span class="tag">Express.js</span><span class="tag">REST APIs</span><span class="tag">GraphQL</span><span class="tag">SOAP</span><span class="tag">Microservices</span>
+          </div>
+        </div>
+        <div class="rs">
+          <h2>// Frontend</h2>
+          <div class="tags">
+            <span class="tag">React.js</span><span class="tag">Vue.js</span><span class="tag">Next.js</span><span class="tag">Redux</span><span class="tag">Tailwind CSS</span><span class="tag">Bootstrap</span><span class="tag">Webpack</span><span class="tag">Vite</span>
+          </div>
+        </div>
+        <div class="rs">
+          <h2>// DevOps & Cloud</h2>
+          <div class="tags">
+            <span class="tag">Docker</span><span class="tag">Kubernetes</span><span class="tag">AWS (EC2/RDS/S3/VPC)</span><span class="tag">Azure</span><span class="tag">GCP</span><span class="tag">CI/CD</span><span class="tag">GitHub Actions</span><span class="tag">Jenkins</span><span class="tag">Nginx</span>
+          </div>
+        </div>
+        <div class="rs">
+          <h2>// Databases</h2>
+          <div class="tags">
+            <span class="tag">MySQL</span><span class="tag">PostgreSQL</span><span class="tag">MongoDB</span><span class="tag">Redis</span><span class="tag">DynamoDB</span>
+          </div>
+        </div>
+        <div class="rs">
+          <h2>// Mobile & Protocols</h2>
+          <div class="tags">
+            <span class="tag">Android (Kotlin)</span><span class="tag">Jetpack Compose</span><span class="tag">BLE</span><span class="tag">MQTT</span><span class="tag">TCP/IP</span><span class="tag">WebSocket</span><span class="tag">Kafka</span><span class="tag">OTA</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: Certifications -->
+      <div class="view" id="resume-cert">
+        <div class="rs">
+          <h2>// Certifications</h2>
+          <div class="ri"><h3>🏅 AWS Cloud Practitioner</h3><div class="mt">Completed</div></div>
+          <div class="ri"><h3>🏅 Full Stack Java Developer</h3><div class="mt">JSpiders — Training & Certification</div></div>
+          <div class="ri"><h3>🏅 Spring Boot Microservices</h3><div class="mt">Online Certification</div></div>
+          <div class="ri"><h3>🏅 Docker Containerization</h3><div class="mt">Self-Directed Learning & Production Implementation</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ PROJECTS WINDOW ═══════════ -->
+  <div class="w" id="w-projects" style="width:640px;height:520px;top:35px;left:160px">
+    <div class="wb" onmousedown="drag(event,'w-projects')">
+      <div class="wd"><div class="dd c" onclick="C('projects')"></div><div class="dd m" onclick="M('projects')"></div><div class="dd x"></div></div>
+      <span class="wt">projects — jothiesh.click</span><button class="wclose" onclick="C('projects')">✕</button>
+    </div>
+    <div class="wc">
+      <div class="url"><span class="lk">🔒</span> jothiesh.click/projects</div>
+      <div class="pg">
+        <div class="pc"><div class="pn">#01</div><div class="pi">🛰️</div><h3>GPS Fleet Management Platform</h3><p>Large-scale real-time tracking for 20K+ devices with live dashboards, historical playback, fuel analytics, and automated reporting.</p><div class="pt">Spring Boot · MQTT · TCP/IP · WebSocket · AWS · Docker</div></div>
+        <div class="pc"><div class="pn">#02</div><div class="pi">🚗</div><h3>Offline Speed Limiter (MSLD)</h3><p>Safety-critical Android app with HERE/TomTom/OSM mapping, 1-meter waypoint precision, offline enforcement, and background services.</p><div class="pt">Kotlin · Jetpack Compose · REST · SOAP · Python</div></div>
+        <div class="pc"><div class="pn">#03</div><div class="pi">📱</div><h3>GPS Tracking Mobile App + Backend</h3><p>End-to-end Android tracking with live sync, historical playback, trip reports, and role-based access control (Admin→Driver).</p><div class="pt">Android · Spring Boot · WebSocket · Spring Security</div></div>
+        <div class="pc"><div class="pn">#04</div><div class="pi">🎥</div><h3>Live Video Streaming Platform</h3><p>Real-time vehicle video monitoring integrated with fleet tracking, synchronized playback with timeline, low-latency stream pipeline.</p><div class="pt">Spring Framework · REST · WebSocket · Video APIs</div></div>
+        <div class="pc"><div class="pn">#05</div><div class="pi">😴</div><h3>AI Driver Monitoring System</h3><p>Real-time face/drowsiness/yawning/distraction detection with MQTT event streaming, risk scoring, and dashboard alerts.</p><div class="pt">Kotlin · TFLite · MQTT · Spring Boot · Redis · Docker</div></div>
+        <div class="pc"><div class="pn">#06</div><div class="pi">🗺️</div><h3>GPS Device Data Integration</h3><p>Full-stack GPS web platform with responsive frontend, real-time MQTT/TCP device data, movement visualization, and analytics.</p><div class="pt">Spring Boot · MVC · REST · MQTT · AWS · Docker</div></div>
+        <div class="pc"><div class="pn">#07</div><div class="pi">📐</div><h3>Advanced Geofence Management</h3><p>Polygon/circular geofence drawing, GPS entry/exit detection, BLE/OTA device config, offline enforcement inside GPS hardware.</p><div class="pt">Android · BLE · OTA · Spring Boot · OSMDroid</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ SKILLS WINDOW (Animated bars) ═══════════ -->
+  <div class="w" id="w-skills" style="width:480px;height:480px;top:40px;left:180px">
+    <div class="wb" onmousedown="drag(event,'w-skills')">
+      <div class="wd"><div class="dd c" onclick="C('skills')"></div><div class="dd m" onclick="M('skills')"></div><div class="dd x"></div></div>
+      <span class="wt">skills — proficiency</span><button class="wclose" onclick="C('skills')">✕</button>
+    </div>
+    <div class="wc" id="skills-body">
+      <div class="url"><span class="lk">📊</span> jothiesh.click/skills</div>
+      <div id="skill-bars"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════ TERMINAL WINDOW ═══════════ -->
+  <div class="w" id="w-term" style="width:580px;height:420px;top:50px;left:160px">
+    <div class="wb" onmousedown="drag(event,'w-term')">
+      <div class="wd"><div class="dd c" onclick="C('term')"></div><div class="dd m" onclick="M('term')"></div><div class="dd x"></div></div>
+      <span class="wt">bash — jothiesh@os</span><button class="wclose" onclick="C('term')">✕</button>
+    </div>
+    <div class="wc term" id="tout">
+      <div class="tl"><span class="tp">jothiesh@os:~$</span> <span class="tc">neofetch</span></div>
+      <div class="tl to"><pre style="color:var(--glow);font-size:10px;line-height:1.3">
+     ██╗ ██████╗ ████████╗██╗  ██╗██╗███████╗███████╗██╗  ██╗
+     ██║██╔═══██╗╚══██╔══╝██║  ██║██║██╔════╝██╔════╝██║  ██║
+     ██║██║   ██║   ██║   ███████║██║█████╗  ███████╗███████║
+██   ██║██║   ██║   ██║   ██╔══██║██║██╔══╝  ╚════██║██╔══██║
+╚█████╔╝╚██████╔╝   ██║   ██║  ██║██║███████╗███████║██║  ██║
+ ╚════╝  ╚═════╝    ╚═╝   ╚═╝  ╚═╝╚═╝╚══════╝╚══════╝╚═╝  ╚═╝</pre></div>
+      <div class="tl to">OS: Jothiesh.OS v3.0</div>
+      <div class="tl to">Host: jothiesh.click</div>
+      <div class="tl to">Uptime: 2+ years coding</div>
+      <div class="tl to">Stack: Java · Kotlin · Python · JS</div>
+      <div class="tl to">Cloud: AWS · Docker · Kubernetes</div>
+      <div class="tl to">IDE: IntelliJ IDEA / Android Studio</div>
+      <div class="tl to">──────────────────────</div>
+      <div class="tl to">Type 'help' for commands</div>
+      <div class="ti"><span class="tp">jothiesh@os:~$</span><input id="tin" type="text" onkeydown="if(event.key==='Enter')runCmd()"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════ FILE MANAGER WINDOW ═══════════ -->
+  <div class="w" id="w-fm" style="width:640px;height:480px;top:30px;left:130px">
+    <div class="wb" onmousedown="drag(event,'w-fm')">
+      <div class="wd"><div class="dd c" onclick="C('fm')"></div><div class="dd m" onclick="M('fm')"></div><div class="dd x"></div></div>
+      <span class="wt">file manager — jothiesh</span><button class="wclose" onclick="C('fm')">✕</button>
+    </div>
+    <div class="wc">
+      <div class="fm-bar">
+        <button class="fb" onclick="fmBack()">← Back</button>
+        <div class="fm-path" id="fm-bc"></div>
+        <div class="fm-tog">
+          <button class="fb on" id="fg-btn" onclick="fmView('grid')">⊞</button>
+          <button class="fb" id="fl-btn" onclick="fmView('list')">☰</button>
+        </div>
+      </div>
+      <div id="fm-c"></div>
+      <div class="fm-st"><span id="fm-cnt"></span><span id="fm-sz"></span></div>
+    </div>
+  </div>
+
+  <!-- ═══════════ PHOTOS WINDOW ═══════════ -->
+  <div class="w" id="w-photos" style="width:560px;height:520px;top:25px;left:150px">
+    <div class="wb" onmousedown="drag(event,'w-photos')">
+      <div class="wd"><div class="dd c" onclick="C('photos')"></div><div class="dd m" onclick="M('photos')"></div><div class="dd x"></div></div>
+      <span class="wt">photos — jothiesh.click/photos</span><button class="wclose" onclick="C('photos')">✕</button>
+    </div>
+    <div class="wc">
+      <div class="url"><span class="lk">🔒</span> jothiesh.click/photos</div>
+      <div class="ph-bar"><h3>📸 My Photos</h3><span class="ph-cnt">12 photos</span></div>
+      <div class="masonry">
+        <!--
+        ╔════════════════════════════════════════════════════╗
+        ║  🖼️ HOW TO ADD YOUR IMAGES:                       ║
+        ║                                                    ║
+        ║  Step 1: Put your images in a "photos/" folder     ║
+        ║          next to this index.html file              ║
+        ║                                                    ║
+        ║  Step 2: Replace the gradient <div> with <img>:    ║
+        ║                                                    ║
+        ║  BEFORE:                                           ║
+        ║    <div class="ph" style="height:200px;            ║
+        ║      background:linear-gradient(...)">             ║
+        ║      <span class="ph-l">📷 Photo 1</span>         ║
+        ║    </div>                                          ║
+        ║                                                    ║
+        ║  AFTER:                                            ║
+        ║    <div class="ph" style="height:auto">            ║
+        ║      <img src="photos/pic1.jpg"                    ║
+        ║        style="width:100%;display:block">           ║
+        ║    </div>                                          ║
+        ║                                                    ║
+        ║  The masonry layout auto-adjusts to image height!  ║
+        ╚════════════════════════════════════════════════════╝
+        -->
+        <div class="m-item" onclick="lbOpen(this)"><div class="ph" style="height:190px;background:linear-gradient(135deg,#0f2027,#203a43,#2c5364)"><span class="ph-l">📷 Photo 1</span></div></div>
+        <div class="m-item" onclick="lbOpen(this)"><div class="ph" style="height:250px;background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460)"><span class="ph-l">📷 Photo 2</span></div></div>
+        <div class="m-item" onclick="lbOpen(this)"><div class="ph" style="height:160px;background:linear-gradient(135deg,#e94560,#533483)"><span class="ph-l">📷 Photo 3</span></div></div>
+        <div class="m-item" onclick="lbOpen(this)"><div class="ph" style="height:210px;background:linear-gradient(135deg,#00b4db,#0083b0)"><span class="ph-l">📷 Photo 4</span></div></div>
+        <div class="m-item" onclick="lbOpen(this)"><div class="ph" style="height:270px;background:linear-gradient(135deg,#6c5ce7,#a29bfe)"><span class="ph-l">📷 Photo 5</span></div></div>
+        <div class="m-item" onclick="lbOpen(this)"><div class="ph" style="height:150px;background:linear-gradient(135deg,#f7971e,#ffd200)"><span class="ph-l">📷 Photo 6</span></div></div>
+        <div class="m-item" onclick="lbOpen(this)"><div class="ph" style="height:220px;background:linear-gradient(135deg,#fc5c7d,#6a82fb)"><span class="ph-l">📷 Photo 7</span></div></div>
+        <div class="m-item" onclick="lbOpen(this)"><div class="ph" style="height:170px;background:linear-gradient(135deg,#11998e,#38ef7d)"><span class="ph-l">📷 Photo 8</span></div></div>
+        <div class="m-item" onclick="lbOpen(this)"><div class="ph" style="height:200px;background:linear-gradient(135deg,#2d3436,#636e72)"><span class="ph-l">📷 Photo 9</span></div></div>
+        <div class="m-item" onclick="lbOpen(this)"><div class="ph" style="height:240px;background:linear-gradient(135deg,#a855f7,#ec4899)"><span class="ph-l">📷 Photo 10</span></div></div>
+        <div class="m-item" onclick="lbOpen(this)"><div class="ph" style="height:155px;background:linear-gradient(135deg,#00c9ff,#92fe9d)"><span class="ph-l">📷 Photo 11</span></div></div>
+        <div class="m-item" onclick="lbOpen(this)"><div class="ph" style="height:205px;background:linear-gradient(135deg,#ff6a88,#ff99ac)"><span class="ph-l">📷 Photo 12</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ BIRTHDAY WINDOW ═══════════ -->
+  <div class="w" id="w-birthday" style="width:480px;height:500px;top:35px;left:200px">
+    <div class="wb" onmousedown="drag(event,'w-birthday')">
+      <div class="wd"><div class="dd c" onclick="C('birthday')"></div><div class="dd m" onclick="M('birthday')"></div><div class="dd x"></div></div>
+      <span class="wt">birthday — jothiesh.click/birthday</span><button class="wclose" onclick="C('birthday')">✕</button>
+    </div>
+    <div class="wc">
+      <div class="url"><span class="lk">🔒</span> jothiesh.click/birthday</div>
+      <div class="bd-page">
+        <div class="bd-title">Happy Birthday! 🎉</div>
+        <div class="bd-sub">🗓️ Her Special Day — Countdown</div>
+        <div class="bd-cake">🎂</div>
+        <div class="cd-grid">
+          <div class="cd-box"><div class="cd-n" id="bd-d">--</div><div class="cd-l">Days</div></div>
+          <div class="cd-box"><div class="cd-n" id="bd-h">--</div><div class="cd-l">Hours</div></div>
+          <div class="cd-box"><div class="cd-n" id="bd-m">--</div><div class="cd-l">Minutes</div></div>
+          <div class="cd-box"><div class="cd-n" id="bd-s">--</div><div class="cd-l">Seconds</div></div>
+        </div>
+        <div class="bd-wish">
+          Every year with you is the best year yet 🌟<br>
+          Happy Birthday to my everything 🥂<br>
+          Here's to more memories together 💕
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ LOVE WINDOW ═══════════ -->
+  <div class="w" id="w-love" style="width:480px;height:500px;top:30px;left:190px">
+    <div class="wb" onmousedown="drag(event,'w-love')">
+      <div class="wd"><div class="dd c" onclick="C('love')"></div><div class="dd m" onclick="M('love')"></div><div class="dd x"></div></div>
+      <span class="wt">love.exe — jothiesh.click/love</span><button class="wclose" onclick="C('love')">✕</button>
+    </div>
+    <div class="wc" style="position:relative;overflow:hidden">
+      <div class="url"><span class="lk">🔒</span> jothiesh.click/love</div>
+      <div class="fh" id="fh"></div>
+      <div class="love">
+        <div class="love-h">💖</div>
+        <div class="love-t">To My Love</div>
+        <div class="love-letter">
+          You make every line of code feel like poetry,
+          every bug feel like an adventure,
+          and every day feel like the best commit
+          I've ever pushed to production. 💕<br><br>
+          You are my favorite notification,
+          the one I never want to dismiss. 🔔<br><br>
+          — forever yours, Jothiesh ❤️
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ MUSIC WINDOW ═══════════ -->
+  <div class="w" id="w-music" style="width:380px;height:440px;top:50px;left:240px">
+    <div class="wb" onmousedown="drag(event,'w-music')">
+      <div class="wd"><div class="dd c" onclick="C('music')"></div><div class="dd m" onclick="M('music')"></div><div class="dd x"></div></div>
+      <span class="wt">music player</span><button class="wclose" onclick="C('music')">✕</button>
+    </div>
+    <div class="wc">
+      <div class="mp">
+        <div class="disc" id="disc"></div>
+        <div class="tn">Midnight Code</div>
+        <div class="ta">Lo-fi Beats for Developers</div>
+        <div class="mbar"><div class="mfill"></div></div>
+        <div class="mc">
+          <span>⏮</span>
+          <span id="pbtn" onclick="togglePlay()">⏸</span>
+          <span>⏭</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ CONTACT WINDOW ═══════════ -->
+  <div class="w" id="w-contact" style="width:480px;height:380px;top:45px;left:200px">
+    <div class="wb" onmousedown="drag(event,'w-contact')">
+      <div class="wd"><div class="dd c" onclick="C('contact')"></div><div class="dd m" onclick="M('contact')"></div><div class="dd x"></div></div>
+      <span class="wt">contact — jothiesh.click</span><button class="wclose" onclick="C('contact')">✕</button>
+    </div>
+    <div class="wc">
+      <div class="url"><span class="lk">🔒</span> jothiesh.click/contact</div>
+      <div class="contact-grid">
+        <a class="c-card" href="mailto:jothiesh7@gmail.com"><span class="c-i">✉️</span><div><div class="c-label">Email</div><div class="c-val">jothiesh7@gmail.com</div></div></a>
+        <a class="c-card" href="tel:+916380900348"><span class="c-i">📱</span><div><div class="c-label">Phone</div><div class="c-val">+91 63809 00348</div></div></a>
+        <a class="c-card" href="https://github.com/jothiesh" target="_blank"><span class="c-i">⚡</span><div><div class="c-label">GitHub</div><div class="c-val">github.com/jothiesh</div></div></a>
+        <a class="c-card" href="https://linkedin.com/in/jothiesh-7-joe" target="_blank"><span class="c-i">💼</span><div><div class="c-label">LinkedIn</div><div class="c-val">linkedin.com/in/jothiesh</div></div></a>
+        <a class="c-card" href="https://jothiesh.click"><span class="c-i">🌐</span><div><div class="c-label">Portfolio</div><div class="c-val">jothiesh.click</div></div></a>
+        <a class="c-card"><span class="c-i">📍</span><div><div class="c-label">Location</div><div class="c-val">Bangalore, India</div></div></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ GUESTBOOK WINDOW ═══════════ -->
+  <div class="w" id="w-gb" style="width:460px;height:460px;top:40px;left:180px">
+    <div class="wb" onmousedown="drag(event,'w-gb')">
+      <div class="wd"><div class="dd c" onclick="C('gb')"></div><div class="dd m" onclick="M('gb')"></div><div class="dd x"></div></div>
+      <span class="wt">guestbook</span><button class="wclose" onclick="C('gb')">✕</button>
+    </div>
+    <div class="wc">
+      <div class="url"><span class="lk">🔒</span> jothiesh.click/guestbook</div>
+      <div class="gb-list" id="gb-list">
+        <div class="gb-e"><div class="gb-n">@visitor_001</div><div class="gb-m">Incredible OS-style site! 🔥</div><div class="gb-d">2026-03-21 14:32</div></div>
+        <div class="gb-e"><div class="gb-n">@dev_friend</div><div class="gb-m">The terminal actually works? Mind blown. Keep building!</div><div class="gb-d">2026-03-20 09:15</div></div>
+        <div class="gb-e"><div class="gb-n">@anonymous</div><div class="gb-m">jothiesh.click/love made me smile 💖</div><div class="gb-d">2026-03-19 22:01</div></div>
+      </div>
+      <div class="gb-f">
+        <input placeholder="Your name..." id="gbn">
+        <textarea placeholder="Leave a message..." id="gbm"></textarea>
+        <button class="gb-btn" onclick="signGb()">Sign Guestbook ✍️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ ACHIEVEMENTS WINDOW ═══════════ -->
+  <div class="w" id="w-achieve" style="width:540px;height:440px;top:40px;left:170px">
+    <div class="wb" onmousedown="drag(event,'w-achieve')">
+      <div class="wd"><div class="dd c" onclick="C('achieve')"></div><div class="dd m" onclick="M('achieve')"></div><div class="dd x"></div></div>
+      <span class="wt">achievements — jothiesh.click</span><button class="wclose" onclick="C('achieve')">✕</button>
+    </div>
+    <div class="wc">
+      <div class="url"><span class="lk">🏆</span> jothiesh.click/achievements</div>
+      <div class="ach">
+        <div class="ach-card"><div class="ach-i">🛰️</div><h4>20K Devices Simulated</h4><p>Load tested 20,000 GPS devices simultaneously with JMeter</p></div>
+        <div class="ach-card"><div class="ach-i">🏗️</div><h4>7 Platforms Solo</h4><p>Independently built 7 production-grade systems from scratch</p></div>
+        <div class="ach-card"><div class="ach-i">☁️</div><h4>Full AWS Infra</h4><p>EC2, RDS, VPC, Route 53, S3, IAM, CloudWatch management</p></div>
+        <div class="ach-card"><div class="ach-i">🐳</div><h4>Docker Everything</h4><p>Containerized all applications with Docker Compose for production</p></div>
+        <div class="ach-card"><div class="ach-i">⚡</div><h4>99%+ Uptime</h4><p>Maintained production servers with proactive monitoring</p></div>
+        <div class="ach-card"><div class="ach-i">👥</div><h4>1,500 Concurrent Logins</h4><p>1,000 Admin + 500 Dealer simultaneous without degradation</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ SETTINGS WINDOW ═══════════ -->
+  <div class="w" id="w-settings" style="width:400px;height:380px;top:55px;left:230px">
+    <div class="wb" onmousedown="drag(event,'w-settings')">
+      <div class="wd"><div class="dd c" onclick="C('settings')"></div><div class="dd m" onclick="M('settings')"></div><div class="dd x"></div></div>
+      <span class="wt">settings</span><button class="wclose" onclick="C('settings')">✕</button>
+    </div>
+    <div class="wc">
+      <div class="sg"><h3>Appearance</h3>
+        <div class="sr"><span>Dark Mode</span><div class="tg on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="sr"><span>Particles</span><div class="tg on" id="tg-particles" onclick="toggleParticles(this)"></div></div>
+        <div class="sr"><span>Animations</span><div class="tg on" onclick="this.classList.toggle('on')"></div></div>
+      </div>
+      <div class="sg"><h3>System</h3>
+        <div class="sr"><span>Notifications</span><div class="tg on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="sr"><span>Sound Effects</span><div class="tg" onclick="this.classList.toggle('on')"></div></div>
+      </div>
+      <div class="sg"><h3>About</h3>
+        <div class="sr"><span>Jothiesh.OS v3.0.0</span><span style="color:var(--glow)">Latest ✓</span></div>
+        <div class="sr"><span>Availability</span><span style="color:var(--glow)">Immediate</span></div>
+      </div>
+    </div>
+  </div>
+  <!-- ═══════════ TIMELINE WINDOW ═══════════ -->
+  <div class="w" id="w-timeline" style="width:520px;height:560px;top:20px;left:130px">
+    <div class="wb" onmousedown="drag(event,'w-timeline')">
+      <div class="wd"><div class="dd c" onclick="C('timeline')"></div><div class="dd m" onclick="M('timeline')"></div><div class="dd x"></div></div>
+      <span class="wt">timeline — my journey</span><button class="wclose" onclick="C('timeline')">✕</button>
+    </div>
+    <div class="wc">
+      <div class="url"><span class="lk">⏳</span> jothiesh.click/timeline</div>
+      <div class="tl-line">
+
+        <div class="tl-item done">
+          <div class="tl-year">2016</div>
+          <div class="tl-title">🎓 Started B.Tech — Computer Science</div>
+          <div class="tl-desc">SKP Engineering College. The beginning of the coding journey.</div>
+          <span class="tl-tag b">Education</span>
+        </div>
+
+        <div class="tl-item done">
+          <div class="tl-year">2020</div>
+          <div class="tl-title">🎓 Graduated B.Tech</div>
+          <div class="tl-desc">Completed Bachelor of Technology in Computer Science & Engineering.</div>
+          <span class="tl-tag b">Education</span>
+        </div>
+
+        <div class="tl-item done">
+          <div class="tl-year">2022</div>
+          <div class="tl-title">💼 First Job — 6D Technologies</div>
+          <div class="tl-desc">Junior Software Developer. Java, Spring Boot, REST APIs, Hibernate, SDLC. First real-world production code.</div>
+          <span class="tl-tag g">Career</span>
+        </div>
+
+        <div class="tl-item done">
+          <div class="tl-year">2023</div>
+          <div class="tl-title">🎓 Started M.Tech — CS</div>
+          <div class="tl-desc">SKP Engineering College. Masters in Computer Science & Engineering.</div>
+          <span class="tl-tag b">Education</span>
+        </div>
+
+        <div class="tl-item done">
+          <div class="tl-year">2024</div>
+          <div class="tl-title">🚀 Joined Thinture Technologies</div>
+          <div class="tl-desc">R&D Software Engineer. Sole developer & system architect. Started building 7 production platforms from scratch.</div>
+          <span class="tl-tag g">Career</span>
+        </div>
+
+        <div class="tl-item done">
+          <div class="tl-year">2024</div>
+          <div class="tl-title">🛰️ GPS Platform — 20K Devices</div>
+          <div class="tl-desc">Built & deployed large-scale GPS fleet tracking platform. MQTT, TCP/IP, WebSocket, Docker, AWS.</div>
+          <span class="tl-tag g">Milestone</span>
+        </div>
+
+        <div class="tl-item done">
+          <div class="tl-year">2025</div>
+          <div class="tl-title">🎓 Completed M.Tech</div>
+          <div class="tl-desc">Master of Technology — Computer Science & Engineering.</div>
+          <span class="tl-tag b">Education</span>
+        </div>
+
+        <div class="tl-item current">
+          <div class="tl-year">2026</div>
+          <div class="tl-title">⚡ Currently — Building & Growing</div>
+          <div class="tl-desc">7+ production apps deployed. Exploring AI/ML, open source, and startup ideas. The journey continues...</div>
+          <span class="tl-tag p">Now</span>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-year">Future</div>
+          <div class="tl-title">🌟 The Dream</div>
+          <div class="tl-desc">Build a startup. Contribute to open source. Speak at conferences. Travel the world. Never stop building.</div>
+          <span class="tl-tag p">Dream</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ YEAR PLANNER WINDOW ═══════════ -->
+  <div class="w" id="w-planner" style="width:560px;height:560px;top:25px;left:150px">
+    <div class="wb" onmousedown="drag(event,'w-planner')">
+      <div class="wd"><div class="dd c" onclick="C('planner')"></div><div class="dd m" onclick="M('planner')"></div><div class="dd x"></div></div>
+      <span class="wt">2026 plan — jothiesh.click</span><button class="wclose" onclick="C('planner')">✕</button>
+    </div>
+    <div class="wc">
+      <div class="url"><span class="lk">📋</span> jothiesh.click/plan/2026</div>
+
+      <!-- Overall progress -->
+      <div class="plan-progress" style="margin-bottom:20px">
+        <div class="pp-label"><span>2026 Goals Progress</span><span id="plan-pct">--</span></div>
+        <div class="pp-bar"><div class="pp-fill" id="plan-fill" style="background:linear-gradient(90deg,var(--glow),var(--cyan));width:0%"></div></div>
+      </div>
+
+      <!-- Q1 -->
+      <div class="plan-q q1">
+        <div class="plan-q-title"><span class="q-badge">Q1</span> Jan – Mar</div>
+        <div class="plan-item"><div class="plan-chk done" onclick="togglePlan(this)">✓</div><div><div class="plan-text struck">Complete M.Tech thesis</div><div class="plan-meta">🎓 Education</div></div></div>
+        <div class="plan-item"><div class="plan-chk done" onclick="togglePlan(this)">✓</div><div><div class="plan-text struck">Deploy GPS platform v3.0</div><div class="plan-meta">🚀 Work</div></div></div>
+        <div class="plan-item"><div class="plan-chk done" onclick="togglePlan(this)">✓</div><div><div class="plan-text struck">Build personal website (jothiesh.click)</div><div class="plan-meta">🌐 Personal</div></div></div>
+        <div class="plan-item"><div class="plan-chk" onclick="togglePlan(this)"></div><div><div class="plan-text">Learn Kubernetes deeply</div><div class="plan-meta">📚 Learning</div></div></div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="plan-q q2">
+        <div class="plan-q-title"><span class="q-badge">Q2</span> Apr – Jun</div>
+        <div class="plan-item"><div class="plan-chk" onclick="togglePlan(this)"></div><div><div class="plan-text">Build AI-powered cricket analytics (CricVision)</div><div class="plan-meta">🏏 Side Project</div></div></div>
+        <div class="plan-item"><div class="plan-chk" onclick="togglePlan(this)"></div><div><div class="plan-text">Contribute to 3 open-source projects</div><div class="plan-meta">💻 Open Source</div></div></div>
+        <div class="plan-item"><div class="plan-chk" onclick="togglePlan(this)"></div><div><div class="plan-text">Get AWS Solutions Architect certification</div><div class="plan-meta">☁️ Certification</div></div></div>
+        <div class="plan-item"><div class="plan-chk" onclick="togglePlan(this)"></div><div><div class="plan-text">Start a tech blog / YouTube</div><div class="plan-meta">📝 Content</div></div></div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="plan-q q3">
+        <div class="plan-q-title"><span class="q-badge">Q3</span> Jul – Sep</div>
+        <div class="plan-item"><div class="plan-chk" onclick="togglePlan(this)"></div><div><div class="plan-text">Launch MVP of a SaaS product</div><div class="plan-meta">🚀 Startup</div></div></div>
+        <div class="plan-item"><div class="plan-chk" onclick="togglePlan(this)"></div><div><div class="plan-text">Master System Design interviews</div><div class="plan-meta">📚 Career Growth</div></div></div>
+        <div class="plan-item"><div class="plan-chk" onclick="togglePlan(this)"></div><div><div class="plan-text">Build 2 Android apps for Play Store</div><div class="plan-meta">📱 Mobile</div></div></div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="plan-q q4">
+        <div class="plan-q-title"><span class="q-badge">Q4</span> Oct – Dec</div>
+        <div class="plan-item"><div class="plan-chk" onclick="togglePlan(this)"></div><div><div class="plan-text">Speak at a local tech meetup / conference</div><div class="plan-meta">🎤 Speaking</div></div></div>
+        <div class="plan-item"><div class="plan-chk" onclick="togglePlan(this)"></div><div><div class="plan-text">Reach 1000+ GitHub contributions</div><div class="plan-meta">💻 Open Source</div></div></div>
+        <div class="plan-item"><div class="plan-chk" onclick="togglePlan(this)"></div><div><div class="plan-text">Travel somewhere new 🗺️</div><div class="plan-meta">✈️ Travel</div></div></div>
+        <div class="plan-item"><div class="plan-chk" onclick="togglePlan(this)"></div><div><div class="plan-text">Review year & plan 2027</div><div class="plan-meta">📋 Reflection</div></div></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════ CALENDAR WINDOW ═══════════ -->
+  <div class="w" id="w-calendar" style="width:460px;height:520px;top:30px;left:180px">
+    <div class="wb" onmousedown="drag(event,'w-calendar')">
+      <div class="wd"><div class="dd c" onclick="C('calendar')"></div><div class="dd m" onclick="M('calendar')"></div><div class="dd x"></div></div>
+      <span class="wt">calendar</span><button class="wclose" onclick="C('calendar')">✕</button>
+    </div>
+    <div class="wc">
+      <div class="cal-header">
+        <h3 id="cal-month-title"></h3>
+        <div class="cal-nav">
+          <button class="cal-btn" onclick="calNav(-1)">◀</button>
+          <button class="cal-btn" onclick="calNav(0)">Today</button>
+          <button class="cal-btn" onclick="calNav(1)">▶</button>
+        </div>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+      <div class="cal-events" id="cal-events"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════ CALCULATOR WINDOW ═══════════ -->
+  <div class="w" id="w-calc" style="width:340px;height:480px;top:40px;left:250px">
+    <div class="wb" onmousedown="drag(event,'w-calc')">
+      <div class="wd"><div class="dd c" onclick="C('calc')"></div><div class="dd m" onclick="M('calc')"></div><div class="dd x"></div></div>
+      <span class="wt">calculator</span><button class="wclose" onclick="C('calc')">✕</button>
+    </div>
+    <div class="wc">
+      <div class="calc">
+        <div class="calc-display">
+          <div class="calc-expr" id="calc-expr"></div>
+          <div class="calc-result" id="calc-result">0</div>
+        </div>
+        <div class="calc-grid">
+          <div class="calc-key del" onclick="calcKey('AC')">AC</div>
+          <div class="calc-key del" onclick="calcKey('DEL')">⌫</div>
+          <div class="calc-key op" onclick="calcKey('%')">%</div>
+          <div class="calc-key op" onclick="calcKey('/')">÷</div>
+          <div class="calc-key" onclick="calcKey('7')">7</div>
+          <div class="calc-key" onclick="calcKey('8')">8</div>
+          <div class="calc-key" onclick="calcKey('9')">9</div>
+          <div class="calc-key op" onclick="calcKey('*')">×</div>
+          <div class="calc-key" onclick="calcKey('4')">4</div>
+          <div class="calc-key" onclick="calcKey('5')">5</div>
+          <div class="calc-key" onclick="calcKey('6')">6</div>
+          <div class="calc-key op" onclick="calcKey('-')">−</div>
+          <div class="calc-key" onclick="calcKey('1')">1</div>
+          <div class="calc-key" onclick="calcKey('2')">2</div>
+          <div class="calc-key" onclick="calcKey('3')">3</div>
+          <div class="calc-key op" onclick="calcKey('+')">+</div>
+          <div class="calc-key span2" onclick="calcKey('0')">0</div>
+          <div class="calc-key" onclick="calcKey('.')">.</div>
+          <div class="calc-key eq" onclick="calcKey('=')">=</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ NOTEPAD ═══════════ -->
+  <div class="w" id="w-notepad" style="width:500px;height:440px;top:35px;left:160px">
+    <div class="wb" onmousedown="drag(event,'w-notepad')">
+      <div class="wd"><div class="dd c" onclick="C('notepad')"></div><div class="dd m" onclick="M('notepad')"></div><div class="dd x"></div></div>
+      <span class="wt">notepad — untitled.txt</span><button class="wclose" onclick="C('notepad')">✕</button>
+    </div>
+    <div class="wc">
+      <div class="notepad-bar">
+        <div class="nb-info">📝 Type anything — auto-saves</div>
+        <div class="nb-info"><span id="np-chars">0</span> chars</div>
+      </div>
+      <textarea class="notepad-area" id="notepad" placeholder="Start typing your notes here..." oninput="document.getElementById('np-chars').textContent=this.value.length;localStorage.setItem('jot-notepad',this.value)"></textarea>
+    </div>
+  </div>
+
+  <!-- ═══════════ SNAKE GAME ═══════════ -->
+  <div class="w" id="w-snake" style="width:420px;height:520px;top:25px;left:180px">
+    <div class="wb" onmousedown="drag(event,'w-snake')">
+      <div class="wd"><div class="dd c" onclick="C('snake')"></div><div class="dd m" onclick="M('snake')"></div><div class="dd x"></div></div>
+      <span class="wt">🐍 snake game</span><button class="wclose" onclick="C('snake')">✕</button>
+    </div>
+    <div class="wc">
+      <div class="game-wrap">
+        <div class="game-score">Score: <span id="snake-score">0</span> | Best: <span id="snake-best">0</span></div>
+        <canvas class="game-canvas" id="snake-canvas" width="360" height="360"></canvas>
+        <div style="margin-top:10px">
+          <button class="game-btn" onclick="startSnake()">▶ Start</button>
+          <button class="game-btn sec" onclick="resetSnake()">↺ Reset</button>
+        </div>
+        <div class="game-dpad">
+          <div></div><button onclick="setDir(0,-1)">▲</button><div></div>
+          <button onclick="setDir(-1,0)">◀</button><button onclick="setDir(0,1)">▼</button><button onclick="setDir(1,0)">▶</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ POMODORO / STOPWATCH ═══════════ -->
+  <div class="w" id="w-pomo" style="width:400px;height:460px;top:30px;left:220px">
+    <div class="wb" onmousedown="drag(event,'w-pomo')">
+      <div class="wd"><div class="dd c" onclick="C('pomo')"></div><div class="dd m" onclick="M('pomo')"></div><div class="dd x"></div></div>
+      <span class="wt">⏱️ pomodoro timer</span><button class="wclose" onclick="C('pomo')">✕</button>
+    </div>
+    <div class="wc">
+      <div class="pomo-modes">
+        <div class="pomo-mode on" onclick="setPomoMode(25,this)">Focus 25m</div>
+        <div class="pomo-mode" onclick="setPomoMode(5,this)">Break 5m</div>
+        <div class="pomo-mode" onclick="setPomoMode(15,this)">Long 15m</div>
+        <div class="pomo-mode" onclick="setPomoMode(0,this)">Stopwatch</div>
+      </div>
+      <div class="sw-display">
+        <div class="sw-ring" id="pomo-ring">
+          <svg width="208" height="208" viewBox="0 0 208 208">
+            <circle cx="104" cy="104" r="100" stroke="var(--border)" />
+            <circle cx="104" cy="104" r="100" stroke="var(--glow)" id="pomo-circle" stroke-dasharray="628" stroke-dashoffset="0" />
+          </svg>
+          <div>
+            <div class="sw-time" id="pomo-time">25:00</div>
+            <div class="sw-label" id="pomo-label">FOCUS MODE</div>
+          </div>
+        </div>
+      </div>
+      <div class="sw-btns">
+        <button class="sw-btn start" id="pomo-start" onclick="togglePomo()">▶ Start</button>
+        <button class="sw-btn" onclick="resetPomo()">↺ Reset</button>
+      </div>
+      <div style="text-align:center;margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--text-d)">Sessions today: <span style="color:var(--glow)" id="pomo-sessions">0</span></div>
+    </div>
+  </div>
+
+  <!-- ═══════════ WEATHER ═══════════ -->
+  <div class="w" id="w-weather" style="width:380px;height:420px;top:40px;left:200px">
+    <div class="wb" onmousedown="drag(event,'w-weather')">
+      <div class="wd"><div class="dd c" onclick="C('weather')"></div><div class="dd m" onclick="M('weather')"></div><div class="dd x"></div></div>
+      <span class="wt">🌤️ weather</span><button class="wclose" onclick="C('weather')">✕</button>
+    </div>
+    <div class="wc">
+      <div class="weather-card">
+        <div class="w-city">📍 Bangalore, India</div>
+        <div class="w-icon" id="w-icon">☀️</div>
+        <div class="w-temp"><span id="w-temp">28</span>°C</div>
+        <div class="w-desc" id="w-desc">Partly Cloudy</div>
+        <div class="w-details">
+          <div class="w-det"><div class="wd-val">💧 65%</div><div class="wd-lbl">Humidity</div></div>
+          <div class="w-det"><div class="wd-val">🌬️ 12km/h</div><div class="wd-lbl">Wind</div></div>
+          <div class="w-det"><div class="wd-val">☀️ UV 6</div><div class="wd-lbl">UV Index</div></div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:12px;font-family:var(--mono);font-size:9px;color:var(--text-d)">Simulated data — connect API for live</div>
+    </div>
+  </div>
+
+  <!-- ═══════════ HABIT TRACKER ═══════════ -->
+  <div class="w" id="w-habits" style="width:520px;height:460px;top:30px;left:150px">
+    <div class="wb" onmousedown="drag(event,'w-habits')">
+      <div class="wd"><div class="dd c" onclick="C('habits')"></div><div class="dd m" onclick="M('habits')"></div><div class="dd x"></div></div>
+      <span class="wt">🎯 habit tracker</span><button class="wclose" onclick="C('habits')">✕</button>
+    </div>
+    <div class="wc">
+      <div class="url"><span class="lk">🎯</span> jothiesh.click/habits</div>
+      <div class="habit-days" style="padding-left:150px"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+      <div class="habit-list" id="habit-list"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════ BLOG ═══════════ -->
+  <div class="w" id="w-blog" style="width:500px;height:480px;top:25px;left:170px">
+    <div class="wb" onmousedown="drag(event,'w-blog')">
+      <div class="wd"><div class="dd c" onclick="C('blog')"></div><div class="dd m" onclick="M('blog')"></div><div class="dd x"></div></div>
+      <span class="wt">📰 blog — thoughts</span><button class="wclose" onclick="C('blog')">✕</button>
+    </div>
+    <div class="wc">
+      <div class="url"><span class="lk">🔒</span> jothiesh.click/blog</div>
+      <div class="blog-post">
+        <div class="blog-date">📅 March 22, 2026</div>
+        <div class="blog-title">Building My Personal OS Website</div>
+        <div class="blog-body">Today I launched jothiesh.click — a personal website that looks like an operating system. Complete with draggable windows, a terminal, file manager, and even a snake game. Built it all with vanilla HTML, CSS, and JS. No frameworks needed.</div>
+        <div class="blog-tags"><span class="blog-tag">#webdev</span><span class="blog-tag">#personal</span><span class="blog-tag">#css</span></div>
+      </div>
+      <div class="blog-post">
+        <div class="blog-date">📅 March 15, 2026</div>
+        <div class="blog-title">Why I Love Building GPS Systems</div>
+        <div class="blog-body">There's something magical about seeing 20,000 dots moving on a map in real-time, knowing your code is making that happen. GPS tracking taught me more about system design than any textbook ever could.</div>
+        <div class="blog-tags"><span class="blog-tag">#gps</span><span class="blog-tag">#iot</span><span class="blog-tag">#systemdesign</span></div>
+      </div>
+      <div class="blog-post">
+        <div class="blog-date">📅 March 1, 2026</div>
+        <div class="blog-title">Late Night Code Sessions > Everything</div>
+        <div class="blog-body">Best code happens between midnight and 4am. No Slack pings, no meetings, just you and the compiler. Coffee in hand, lo-fi in ears, and a bug that's about to meet its maker.</div>
+        <div class="blog-tags"><span class="blog-tag">#coding</span><span class="blog-tag">#life</span><span class="blog-tag">#lofi</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ CHAT SIMULATOR ═══════════ -->
+  <div class="w" id="w-chat" style="width:440px;height:480px;top:30px;left:190px">
+    <div class="wb" onmousedown="drag(event,'w-chat')">
+      <div class="wd"><div class="dd c" onclick="C('chat')"></div><div class="dd m" onclick="M('chat')"></div><div class="dd x"></div></div>
+      <span class="wt">💬 chat with jothiesh</span><button class="wclose" onclick="C('chat')">✕</button>
+    </div>
+    <div class="wc">
+      <div class="chat-box" id="chat-box">
+        <div class="chat-msg them"><div class="chat-name">Jothiesh 🟢</div>Hey! Welcome to my website 👋</div>
+        <div class="chat-msg them"><div class="chat-name">Jothiesh 🟢</div>Ask me anything — or just say hi!</div>
+      </div>
+      <div class="chat-input-row">
+        <input class="chat-input" id="chat-in" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendChat()">
+        <button class="chat-send" onclick="sendChat()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ DRAWING BOARD ═══════════ -->
+  <div class="w" id="w-draw" style="width:500px;height:480px;top:25px;left:160px">
+    <div class="wb" onmousedown="drag(event,'w-draw')">
+      <div class="wd"><div class="dd c" onclick="C('draw')"></div><div class="dd m" onclick="M('draw')"></div><div class="dd x"></div></div>
+      <span class="wt">🎨 drawing board</span><button class="wclose" onclick="C('draw')">✕</button>
+    </div>
+    <div class="wc">
+      <div class="draw-toolbar" id="draw-toolbar">
+        <div class="draw-color on" style="background:var(--glow)" onclick="setDrawColor('#00ffa3',this)"></div>
+        <div class="draw-color" style="background:var(--pink)" onclick="setDrawColor('#ff4da6',this)"></div>
+        <div class="draw-color" style="background:var(--blue)" onclick="setDrawColor('#4d9fff',this)"></div>
+        <div class="draw-color" style="background:var(--gold)" onclick="setDrawColor('#fbbf24',this)"></div>
+        <div class="draw-color" style="background:var(--purple)" onclick="setDrawColor('#a855f7',this)"></div>
+        <div class="draw-color" style="background:#ffffff" onclick="setDrawColor('#ffffff',this)"></div>
+        <div class="draw-size">Size: <input type="range" min="1" max="20" value="3" id="draw-sz"></div>
+        <button class="fb" onclick="clearCanvas()">🗑️ Clear</button>
+      </div>
+      <canvas class="draw-canvas" id="draw-canvas" width="450" height="320"></canvas>
+    </div>
+  </div>
+
+  <!-- ═══════════ EMAIL ME ═══════════ -->
+  <div class="w" id="w-emailme" style="width:460px;height:440px;top:35px;left:180px">
+    <div class="wb" onmousedown="drag(event,'w-emailme')">
+      <div class="wd"><div class="dd c" onclick="C('emailme')"></div><div class="dd m" onclick="M('emailme')"></div><div class="dd x"></div></div>
+      <span class="wt">📧 email me</span><button class="wclose" onclick="C('emailme')">✕</button>
+    </div>
+    <div class="wc">
+      <div class="url"><span class="lk">📧</span> jothiesh.click/contact</div>
+      <div class="email-form" id="email-form">
+        <input placeholder="Your Name" id="em-name">
+        <input placeholder="Your Email" id="em-email" type="email">
+        <input placeholder="Subject" id="em-subject">
+        <textarea placeholder="Your message..."></textarea>
+        <button class="email-send" onclick="sendEmail()">Send Message 🚀</button>
+      </div>
+      <div style="margin-top:12px;text-align:center;font-family:var(--mono);font-size:10px;color:var(--text-d)">Or email directly: <a href="mailto:jothiesh7@gmail.com" style="color:var(--glow);text-decoration:none">jothiesh7@gmail.com</a></div>
+    </div>
+  </div>
+
+  <!-- ═══════════ TESTIMONIALS ═══════════ -->
+  <div class="w" id="w-testi" style="width:480px;height:460px;top:30px;left:170px">
+    <div class="wb" onmousedown="drag(event,'w-testi')">
+      <div class="wd"><div class="dd c" onclick="C('testi')"></div><div class="dd m" onclick="M('testi')"></div><div class="dd x"></div></div>
+      <span class="wt">🗣️ testimonials</span><button class="wclose" onclick="C('testi')">✕</button>
+    </div>
+    <div class="wc">
+      <div class="url"><span class="lk">🗣️</span> jothiesh.click/testimonials</div>
+      <div class="testi-card">
+        <div class="testi-text">Jothiesh single-handedly built and deployed 7 production platforms. His ability to handle everything from system design to AWS deployment is remarkable.</div>
+        <div class="testi-author"><div class="testi-avatar">T</div><div><div class="testi-name">Thinture Technologies</div><div class="testi-role">Employer</div></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-text">An incredibly talented developer who thinks in systems, not just code. The GPS platform he built handles 20K+ devices flawlessly.</div>
+        <div class="testi-author"><div class="testi-avatar">C</div><div><div class="testi-name">Colleague</div><div class="testi-role">Senior Engineer</div></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-text">His personal website is one of the most creative developer sites I've ever seen. The attention to detail is insane — it's literally an operating system!</div>
+        <div class="testi-author"><div class="testi-avatar">V</div><div><div class="testi-name">Visitor</div><div class="testi-role">Fellow Developer</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ DOWNLOAD RESUME ═══════════ -->
+  <div class="w" id="w-dlresume" style="width:400px;height:380px;top:50px;left:220px">
+    <div class="wb" onmousedown="drag(event,'w-dlresume')">
+      <div class="wd"><div class="dd c" onclick="C('dlresume')"></div><div class="dd m" onclick="M('dlresume')"></div><div class="dd x"></div></div>
+      <span class="wt">📑 download resume</span><button class="wclose" onclick="C('dlresume')">✕</button>
+    </div>
+    <div class="wc">
+      <div class="dl-card">
+        <div class="dl-icon">📄</div>
+        <div class="dl-title">Jothiesh's Resume</div>
+        <div class="dl-sub">Java Developer · Full Stack · DevOps · Cloud</div>
+        <!-- ╔═══════════════════════════════════════╗
+             ║ PUT YOUR RESUME PDF FILE HERE:        ║
+             ║ 1. Place resume.pdf in same folder    ║
+             ║ 2. Change href below to "resume.pdf"  ║
+             ╚═══════════════════════════════════════╝ -->
+        <a class="dl-btn" href="mailto:jothiesh7@gmail.com?subject=Resume Request" target="_blank">📥 Download PDF</a>
+        <div class="dl-meta">
+          <span>📋 4 Pages</span>
+          <span>📁 PDF Format</span>
+          <span>🕐 Updated Mar 2026</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ 3D WORLD ═══════════ -->
+  <div class="w" id="w-world3d" style="width:800px;height:580px;top:5px;left:50px">
+    <div class="wb" onmousedown="drag(event,'w-world3d')">
+      <div class="wd"><div class="dd c" onclick="C('world3d')"></div><div class="dd m" onclick="M('world3d')"></div><div class="dd x"></div></div>
+      <span class="wt">🌍 our world — jothiesh & bambiee</span><button class="wclose" onclick="C('world3d')">✕</button>
+    </div>
+    <div class="wc" style="padding:0;position:relative;overflow:hidden">
+      <div id="world-container" style="width:100%;height:100%"></div>
+      <div class="world-msg" id="world-msg">💖 Jothiesh & Bambiee's World 💖</div>
+      <div class="world-loc"><div class="wl-dot"></div><span id="world-loc-text">🏠 Our Home</span></div>
+      <div class="world-expand" onclick="toggleWorldFS()" title="Fullscreen">⛶</div>
+      <div class="world-places">
+        <div class="world-place active" onclick="goPlace('home')">🏠 Our Home</div>
+        <div class="world-place" onclick="goPlace('park')">🌳 Park Date</div>
+        <div class="world-place" onclick="goPlace('restaurant')">🍽️ Restaurant</div>
+        <div class="world-place" onclick="goPlace('dinner')">🕯️ Candle Dinner</div>
+        <div class="world-place" onclick="goPlace('work')">💼 Jothiesh's Office</div>
+        <div class="world-place" onclick="goPlace('beach')">🏖️ Beach Walk</div>
+      </div>
+      <div class="world-hud">
+        <div class="world-btn active" onclick="worldAction('rotate')">🔄 Rotate</div>
+        <div class="world-btn" onclick="worldAction('day')">☀️ Day</div>
+        <div class="world-btn" onclick="worldAction('night')">🌙 Night</div>
+        <div class="world-btn" onclick="worldAction('sunset')">🌅 Sunset</div>
+        <div class="world-btn" onclick="worldAction('hearts')">💖 Hearts</div>
+        <div class="world-btn" onclick="worldAction('fireworks')">🎆 Fireworks</div>
+        <div class="world-btn" onclick="worldAction('dance')">💃 Dance</div>
+        <div class="world-btn" onclick="worldAction('walk')">🚶 Walk Together</div>
+        <div class="world-btn" onclick="worldAction('hug')">🤗 Hug</div>
+        <div class="world-btn" onclick="worldAction('message')">💌 Love Note</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<div class="lbox" id="lbox" onclick="lbClose()">
+  <div class="lb-x">✕</div>
+  <div class="lb-in" id="lb-in">Select a photo to preview</div>
+</div>
+
+<!-- ═══════════ TASKBAR ═══════════ -->
+<div id="bar">
+  <div class="bar-start" onclick="toggleSM()">⚡ START</div>
+  <div class="bar-apps" id="bar-apps"></div>
+  <div class="bar-clock" id="clock"></div>
+</div>
+
+<!-- ═══════════ START MENU ═══════════ -->
+<div id="smenu">
+  <div class="sm-hd"><h3>⚡ Jothiesh.OS</h3><p>v3.0 — All Systems Go</p></div>
+  <div class="sm-i" onclick="O('about');toggleSM()"><span class="si">👤</span><div><div class="sl">About</div><div class="sd">who am i</div></div></div>
+  <div class="sm-i" onclick="O('resume');toggleSM()"><span class="si">📄</span><div><div class="sl">Resume</div><div class="sd">experience & skills</div></div></div>
+  <div class="sm-i" onclick="O('projects');toggleSM()"><span class="si">🚀</span><div><div class="sl">Projects</div><div class="sd">7 production apps</div></div></div>
+  <div class="sm-i" onclick="O('skills');toggleSM()"><span class="si">📊</span><div><div class="sl">Skills</div><div class="sd">proficiency bars</div></div></div>
+  <div class="sm-i" onclick="O('term');toggleSM()"><span class="si">⬛</span><div><div class="sl">Terminal</div><div class="sd">bash shell</div></div></div>
+  <div class="sm-i" onclick="O('fm');toggleSM()"><span class="si">🗂️</span><div><div class="sl">File Manager</div><div class="sd">browse files</div></div></div>
+  <div class="sm-i" onclick="O('photos');toggleSM()"><span class="si">📸</span><div><div class="sl">Photos</div><div class="sd">my gallery</div></div></div>
+  <div class="sm-i" onclick="O('birthday');toggleSM()"><span class="si">🎂</span><div><div class="sl">Birthday</div><div class="sd">her special day</div></div></div>
+  <div class="sm-i" onclick="O('love');toggleSM()"><span class="si">💖</span><div><div class="sl">Love</div><div class="sd">my love</div></div></div>
+  <div class="sm-i" onclick="O('music');toggleSM()"><span class="si">🎵</span><div><div class="sl">Music</div><div class="sd">now playing</div></div></div>
+  <div class="sm-i" onclick="O('contact');toggleSM()"><span class="si">📞</span><div><div class="sl">Contact</div><div class="sd">reach me</div></div></div>
+  <div class="sm-i" onclick="O('gb');toggleSM()"><span class="si">📝</span><div><div class="sl">Guestbook</div><div class="sd">sign it</div></div></div>
+  <div class="sm-i" onclick="O('achieve');toggleSM()"><span class="si">🏆</span><div><div class="sl">Achievements</div><div class="sd">key milestones</div></div></div>
+  <div class="sm-i" onclick="O('settings');toggleSM()"><span class="si">⚙️</span><div><div class="sl">Settings</div><div class="sd">preferences</div></div></div>
+  <div class="sm-i" onclick="O('timeline');toggleSM()"><span class="si">⏳</span><div><div class="sl">Timeline</div><div class="sd">my journey</div></div></div>
+  <div class="sm-i" onclick="O('planner');toggleSM()"><span class="si">📋</span><div><div class="sl">2026 Plan</div><div class="sd">yearly goals</div></div></div>
+  <div class="sm-i" onclick="O('calendar');toggleSM()"><span class="si">📆</span><div><div class="sl">Calendar</div><div class="sd">dates & events</div></div></div>
+  <div class="sm-i" onclick="O('calc');toggleSM()"><span class="si">🧮</span><div><div class="sl">Calculator</div><div class="sd">quick math</div></div></div>
+  <div class="sm-i" onclick="O('notepad');toggleSM()"><span class="si">📝</span><div><div class="sl">Notepad</div><div class="sd">write notes</div></div></div>
+  <div class="sm-i" onclick="O('snake');toggleSM()"><span class="si">🎮</span><div><div class="sl">Snake Game</div><div class="sd">play a game</div></div></div>
+  <div class="sm-i" onclick="O('pomo');toggleSM()"><span class="si">⏱️</span><div><div class="sl">Pomodoro</div><div class="sd">focus timer</div></div></div>
+  <div class="sm-i" onclick="O('weather');toggleSM()"><span class="si">🌤️</span><div><div class="sl">Weather</div><div class="sd">bangalore</div></div></div>
+  <div class="sm-i" onclick="O('habits');toggleSM()"><span class="si">🎯</span><div><div class="sl">Habits</div><div class="sd">track streaks</div></div></div>
+  <div class="sm-i" onclick="O('blog');toggleSM()"><span class="si">📰</span><div><div class="sl">Blog</div><div class="sd">my thoughts</div></div></div>
+  <div class="sm-i" onclick="O('chat');toggleSM()"><span class="si">💬</span><div><div class="sl">Chat</div><div class="sd">talk to me</div></div></div>
+  <div class="sm-i" onclick="O('draw');toggleSM()"><span class="si">🎨</span><div><div class="sl">Drawing</div><div class="sd">paint board</div></div></div>
+  <div class="sm-i" onclick="O('emailme');toggleSM()"><span class="si">📧</span><div><div class="sl">Email Me</div><div class="sd">contact form</div></div></div>
+  <div class="sm-i" onclick="O('testi');toggleSM()"><span class="si">🗣️</span><div><div class="sl">Testimonials</div><div class="sd">what they say</div></div></div>
+  <div class="sm-i" onclick="O('dlresume');toggleSM()"><span class="si">📑</span><div><div class="sl">Download CV</div><div class="sd">get resume</div></div></div>
+  <div class="sm-i" onclick="O('world3d');toggleSM()"><span class="si">🌍</span><div><div class="sl">Our World</div><div class="sd">jothiesh & bambiee</div></div></div>
+</div>
+
+<!-- ═══════════ CONTEXT MENU ═══════════ -->
+<div class="ctx" id="ctx">
+  <div class="ctx-i" onclick="location.reload()">🔄 Refresh Desktop</div>
+  <div class="ctx-i" onclick="O('term')">⬛ Open Terminal</div>
+  <div class="ctx-d"></div>
+  <div class="ctx-i" onclick="O('about')">👤 About Jothiesh</div>
+  <div class="ctx-i" onclick="O('resume')">📄 Resume</div>
+  <div class="ctx-i" onclick="O('settings')">⚙️ Settings</div>
+  <div class="ctx-d"></div>
+  <div class="ctx-i" style="color:var(--text-d)">📋 jothiesh.click v3.0</div>
+</div>
+
+<!-- ═══════════ NOTIFICATION ═══════════ -->
+<div class="notif" id="notif"><span id="ntxt"></span></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   ✨ PARTICLE SYSTEM
+   ═══════════════════════════════════════════════════════ */
+const cvs=document.getElementById('particles'),ctx=cvs.getContext('2d');
+let W,H,pts=[],particlesOn=true;
+function resize(){W=cvs.width=window.innerWidth;H=cvs.height=window.innerHeight}
+window.addEventListener('resize',resize);resize();
+for(let i=0;i<80;i++)pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.5+.5});
+function drawPts(){
+  if(!particlesOn){requestAnimationFrame(drawPts);return}
+  ctx.clearRect(0,0,W,H);
+  pts.forEach(p=>{
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='#00ffa318';ctx.fill();
+  });
+  pts.forEach((a,i)=>{
+    for(let j=i+1;j<pts.length;j++){
+      const b=pts[j],dx=a.x-b.x,dy=a.y-b.y,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<120){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=`rgba(0,255,163,${.06*(1-d/120)})`;ctx.stroke()}
+    }
+  });
+  requestAnimationFrame(drawPts);
+}
+drawPts();
+function toggleParticles(el){el.classList.toggle('on');particlesOn=el.classList.contains('on');if(!particlesOn)ctx.clearRect(0,0,W,H)}
+
+/* ═══════════════════════════════════════════════════════
+   🖥️ BOOT SEQUENCE
+   ═══════════════════════════════════════════════════════ */
+const bMsgs=['Initializing Jothiesh.OS v3.0...','Loading kernel modules...','Mounting /home/jothiesh...','Starting particle engine...','Loading 7 production applications...','Connecting to jothiesh.click...','Checking AWS infrastructure...','System ready. Welcome back. ✓'];
+let bI=0;const bTxt=document.getElementById('b-txt'),bFill=document.getElementById('b-fill');
+function boot(){
+  if(bI<bMsgs.length){bTxt.innerHTML+=bMsgs[bI]+'\n';bFill.style.width=((bI+1)/bMsgs.length*100)+'%';bI++;setTimeout(boot,350)}
+  else setTimeout(()=>{document.getElementById('boot').classList.add('bye');setTimeout(()=>{document.getElementById('boot').style.display='none';notify('Welcome to Jothiesh.OS ⚡')},900)},500)
+}
+setTimeout(boot,400);
+
+/* ═══════════════════════════════════════════════════════
+   🪟 WINDOW MANAGEMENT
+   ═══════════════════════════════════════════════════════ */
+let wins=[],zI=10;
+const labels={about:'👤 About',resume:'📄 Resume',projects:'🚀 Projects',skills:'📊 Skills',term:'⬛ Term',fm:'🗂️ Files',photos:'📸 Photos',birthday:'🎂 Birthday',love:'💖 Love',music:'🎵 Music',contact:'📞 Contact',gb:'📝 Guest',achieve:'🏆 Achieve',settings:'⚙️ Settings',timeline:'⏳ Timeline',planner:'📋 Plan',calendar:'📆 Cal',calc:'🧮 Calc',notepad:'📝 Note',snake:'🎮 Snake',pomo:'⏱️ Pomo',weather:'🌤️ Weather',habits:'🎯 Habits',blog:'📰 Blog',chat:'💬 Chat',draw:'🎨 Draw',emailme:'📧 Email',testi:'🗣️ Testi',dlresume:'📑 CV',world3d:'🌍 World'};
+
+function O(n){const w=document.getElementById('w-'+n);if(!w)return;w.classList.add('on');w.style.zIndex=++zI;if(!wins.includes(n))wins.push(n);updBar();if(n==='love')spawnH();if(n==='term')setTimeout(()=>document.getElementById('tin')?.focus(),100);if(n==='skills')animSkills();if(n==='fm'&&!document.querySelector('.fm-grid,.fm-list'))fmInit();if(n==='calendar')renderCal();if(n==='planner')updPlanProgress();if(n==='habits')initHabits();if(n==='draw')initDraw();if(n==='notepad'){const np=document.getElementById('notepad');const saved=localStorage.getItem('jot-notepad');if(saved)np.value=saved;document.getElementById('np-chars').textContent=np.value.length}if(n==='world3d')initWorld3D()}
+function C(n){const w=document.getElementById('w-'+n);if(w)w.classList.remove('on');wins=wins.filter(x=>x!==n);updBar()}
+function M(n){const w=document.getElementById('w-'+n);if(w)w.classList.remove('on');updBar()}
+function F(n){const w=document.getElementById('w-'+n);if(!w)return;if(!w.classList.contains('on'))w.classList.add('on');w.style.zIndex=++zI}
+function updBar(){const b=document.getElementById('bar-apps');b.innerHTML='';wins.forEach(n=>{const d=document.createElement('div');d.className='bar-app on';d.textContent=labels[n]||n;d.onclick=()=>F(n);b.appendChild(d)})}
+
+/* Drag */
+let dW=null,dX=0,dY=0;
+function drag(e,id){if(e.target.closest('.dd')||e.target.closest('.wclose'))return;dW=document.getElementById(id);dW.style.zIndex=++zI;const r=dW.getBoundingClientRect();dX=e.clientX-r.left;dY=e.clientY-r.top;e.preventDefault()}
+document.addEventListener('mousemove',e=>{if(!dW)return;dW.style.left=(e.clientX-dX)+'px';dW.style.top=(e.clientY-dY)+'px'});
+document.addEventListener('mouseup',()=>dW=null);
+
+/* ═══════════════════════════════════════════════════════
+   🔀 SPA TAB ROUTER
+   ═══════════════════════════════════════════════════════ */
+function tab(win,view,el){
+  document.querySelectorAll(`#w-${win} .view`).forEach(v=>v.classList.remove('on'));
+  document.querySelectorAll(`#w-${win} .nav a`).forEach(a=>a.classList.remove('on'));
+  document.getElementById(`${win}-${view}`).classList.add('on');
+  el.classList.add('on');
+}
+
+/* ═══════════════════════════════════════════════════════
+   🕐 CLOCK + BIRTHDAY COUNTDOWN
+   ═══════════════════════════════════════════════════════ */
+function updClock(){const n=new Date(),h=String(n.getHours()).padStart(2,'0'),m=String(n.getMinutes()).padStart(2,'0'),s=String(n.getSeconds()).padStart(2,'0');document.getElementById('clock').innerHTML=`${h}:${m}:${s}<br>${n.toLocaleDateString('en-US',{month:'short',day:'numeric'})}`}
+setInterval(updClock,1000);updClock();
+
+// ── Set birthday: change month (0-indexed) and day ──
+function updBd(){
+  const now=new Date();let y=now.getFullYear();
+  // ╔══════════════════════════════════╗
+  // ║ SET HER BIRTHDAY HERE:          ║
+  // ║ Month is 0-indexed (Jan=0)      ║
+  // ║ Example: Feb 14 = new Date(y,1,14) ║
+  // ╚══════════════════════════════════╝
+  let bd=new Date(y,0,1); // ← CHANGE THIS (month, day)
+  if(bd<now)bd=new Date(y+1,0,1);
+  const df=bd-now;
+  document.getElementById('bd-d').textContent=Math.floor(df/864e5);
+  document.getElementById('bd-h').textContent=Math.floor((df%864e5)/36e5);
+  document.getElementById('bd-m').textContent=Math.floor((df%36e5)/6e4);
+  document.getElementById('bd-s').textContent=Math.floor((df%6e4)/1e3);
+}
+setInterval(updBd,1000);updBd();
+
+/* ═══════════════════════════════════════════════════════
+   ⬛ TERMINAL
+   ═══════════════════════════════════════════════════════ */
+const cmds={
+  help:'Commands: about, skills, projects, contact, resume, love, birthday, ls, cat resume.txt, clear, whoami, uptime, date, sudo, neofetch',
+  about:'Jothiesh — R&D Software Engineer @ Thinture Technologies.\n2+ years exp | 7 production platforms | Java · Kotlin · Python · Spring Boot · AWS · Docker',
+  skills:'Java(8-21) · Kotlin · Python · Spring Boot · Spring MVC · Spring Security · Hibernate · REST · GraphQL\nReact · Vue · Next.js · Node.js · Docker · Kubernetes · AWS · MySQL · PostgreSQL · Redis · MongoDB\nAndroid · Jetpack Compose · BLE · MQTT · TCP/IP · WebSocket · Kafka · JMeter',
+  projects:'#01 GPS Fleet Management Platform (20K+ devices)\n#02 Offline Speed Limiter (MSLD) Android App\n#03 GPS Tracking Mobile App + Backend\n#04 Live Video Streaming Platform\n#05 AI Driver Monitoring System (DMS)\n#06 GPS Device Data Integration Platform\n#07 Advanced Geofence Management System',
+  contact:'Email: jothiesh7@gmail.com\nPhone: +91 63809 00348\nGitHub: github.com/jothiesh\nLinkedIn: linkedin.com/in/jothiesh-7-joe\nWeb: jothiesh.click',
+  resume:'→ M.Tech CS @ SKP Engineering College (2023-25)\n→ R&D Engineer @ Thinture Technologies (2024-Present)\n→ Junior Dev @ 6D Technologies (2022)\n→ B.Tech CS @ SKP Engineering College (2016-20)',
+  whoami:'jothiesh — developer, architect, builder',
+  date:()=>new Date().toString(),
+  uptime:'2+ years. 7 platforms. Still compiling dreams.',
+  love:'💖 You are loved. Always and forever.',
+  birthday:'🎂 Check /birthday for the countdown!',
+  ls:'about.txt  resume.pdf  projects/  love.txt  birthday.sh  music/  photos/  .secret  docker-compose.yml  deploy.sh',
+  'cat resume.txt':'R&D Software Engineer @ Thinture Technologies\nSole Developer & System Architect\n7 production-grade platforms from scratch\nStack: Java, Kotlin, Python, Spring Boot, Android, AWS, Docker\nAvailability: Immediate',
+  sudo:'Nice try 😎 You need root access to jothiesh.click',
+  neofetch:'Run neofetch at the top ↑',
+  clear:'CLEAR'
+};
+function runCmd(){
+  const inp=document.getElementById('tin'),cmd=inp.value.trim().toLowerCase();inp.value='';
+  const out=document.getElementById('tout'),il=out.querySelector('.ti');
+  const cl=document.createElement('div');cl.className='tl';cl.innerHTML=`<span class="tp">jothiesh@os:~$</span> <span class="tc">${cmd}</span>`;out.insertBefore(cl,il);
+  if(cmd==='clear'){out.querySelectorAll('.tl,.to').forEach(l=>l.remove());return}
+  let res=cmds[cmd];if(typeof res==='function')res=res();if(!res)res=`bash: ${cmd}: command not found. Type 'help'`;
+  const ol=document.createElement('div');ol.className='tl to';ol.style.whiteSpace='pre-wrap';ol.textContent=res;out.insertBefore(ol,il);out.scrollTop=out.scrollHeight;
+}
+
+/* ═══════════════════════════════════════════════════════
+   📊 SKILLS ANIMATED BARS
+   ═══════════════════════════════════════════════════════ */
+const skillData=[
+  {name:'Java / Spring Boot',pct:95,color:'var(--glow)'},
+  {name:'Kotlin / Android',pct:90,color:'var(--cyan)'},
+  {name:'Python',pct:80,color:'var(--blue)'},
+  {name:'Docker / DevOps',pct:88,color:'var(--purple)'},
+  {name:'AWS Cloud',pct:85,color:'var(--orange)'},
+  {name:'MySQL / PostgreSQL',pct:92,color:'var(--gold)'},
+  {name:'REST / GraphQL APIs',pct:94,color:'var(--glow)'},
+  {name:'React / Vue / Next.js',pct:75,color:'var(--pink)'},
+  {name:'MQTT / TCP / WebSocket',pct:90,color:'var(--cyan)'},
+  {name:'System Design',pct:88,color:'var(--purple)'},
+  {name:'Git / CI/CD',pct:90,color:'var(--blue)'},
+  {name:'Linux / Shell',pct:85,color:'var(--orange)'},
+];
+function animSkills(){
+  const c=document.getElementById('skill-bars');
+  c.innerHTML=skillData.map(s=>`<div class="skill-bar"><div class="sk-name">${s.name}<span>${s.pct}%</span></div><div class="sk-track"><div class="sk-fill" data-w="${s.pct}" style="background:${s.color}"></div></div></div>`).join('');
+  setTimeout(()=>c.querySelectorAll('.sk-fill').forEach(f=>f.style.width=f.dataset.w+'%'),100);
+}
+
+/* ═══════════════════════════════════════════════════════
+   🗂️ FILE MANAGER
+   ═══════════════════════════════════════════════════════ */
+const FS={name:'home',t:'d',ch:[
+  {name:'jothiesh',t:'d',ch:[
+    {name:'projects',t:'d',ch:[
+      {name:'gps-tracker',t:'d',ch:[{name:'Application.java',t:'f',i:'☕',s:'12.4 KB',d:'2026-03-15'},{name:'pom.xml',t:'f',i:'📋',s:'3.2 KB',d:'2026-03-10'},{name:'Dockerfile',t:'f',i:'🐳',s:'1.1 KB',d:'2026-03-10'},{name:'docker-compose.yml',t:'f',i:'🐳',s:'1.8 KB',d:'2026-03-01'}]},
+      {name:'geofence-app',t:'d',ch:[{name:'MapFragment.kt',t:'f',i:'🗺️',s:'18.7 KB',d:'2026-03-20'},{name:'BluetoothManager.kt',t:'f',i:'📶',s:'8.3 KB',d:'2026-03-18'},{name:'build.gradle.kts',t:'f',i:'🐘',s:'2.4 KB',d:'2026-03-12'}]},
+      {name:'speed-limiter',t:'d',ch:[{name:'SpeedDetector.kt',t:'f',i:'🚗',s:'14.2 KB',d:'2026-03-08'},{name:'WaypointGenerator.py',t:'f',i:'🐍',s:'9.6 KB',d:'2026-02-25'}]},
+      {name:'dms-app',t:'d',ch:[{name:'FaceDetector.kt',t:'f',i:'😴',s:'11.5 KB',d:'2026-02-20'},{name:'AlertManager.kt',t:'f',i:'🔔',s:'5.2 KB',d:'2026-02-18'}]},
+      {name:'video-stream',t:'d',ch:[{name:'StreamController.java',t:'f',i:'🎥',s:'7.1 KB',d:'2026-01-20'}]},
+      {name:'device-integration',t:'d',ch:[{name:'MqttSubscriber.java',t:'f',i:'📡',s:'9.3 KB',d:'2026-02-10'}]},
+    ]},
+    {name:'documents',t:'d',ch:[{name:'resume.pdf',t:'f',i:'📄',s:'245 KB',d:'2026-03-22'},{name:'notes.md',t:'f',i:'📝',s:'8.7 KB',d:'2026-03-21'},{name:'aws-architecture.png',t:'f',i:'🖼️',s:'1.2 MB',d:'2026-01-15'}]},
+    {name:'media',t:'d',ch:[
+      {name:'photos',t:'d',ch:[{name:'workspace.jpg',t:'f',i:'🖼️',s:'2.4 MB',d:'2026-03-10'},{name:'team.jpg',t:'f',i:'🖼️',s:'4.5 MB',d:'2025-12-25'}]},
+      {name:'music',t:'d',ch:[{name:'midnight-code.mp3',t:'f',i:'🎵',s:'4.2 MB',d:'2026-01-05'},{name:'lofi-beats.mp3',t:'f',i:'🎵',s:'3.8 MB',d:'2026-01-05'}]},
+    ]},
+    {name:'.config',t:'d',ch:[{name:'.bashrc',t:'f',i:'⚙️',s:'2.1 KB',d:'2026-01-01'},{name:'.gitconfig',t:'f',i:'⚙️',s:'0.5 KB',d:'2026-01-01'}]},
+    {name:'love.txt',t:'f',i:'💖',s:'0.8 KB',d:'2026-02-14'},
+    {name:'birthday.sh',t:'f',i:'🎂',s:'0.3 KB',d:'2026-01-01'},
+    {name:'deploy.sh',t:'f',i:'🚀',s:'1.2 KB',d:'2026-03-20'},
+    {name:'.secret',t:'f',i:'🔐',s:'???',d:'???'},
+  ]}
+]};
+let fmP=[],fmV='grid';
+function fmInit(){fmP=['home','jothiesh'];renderFm()}
+function fmGet(path){let n=FS;for(let i=0;i<path.length;i++){if(i===0&&path[i]===n.name)continue;n=n.ch?.find(c=>c.name===path[i]);if(!n)return null}return n}
+function fmBack(){if(fmP.length>1){fmP.pop();renderFm()}}
+function fmNav(name){fmP.push(name);renderFm()}
+function fmView(m){fmV=m;document.getElementById('fg-btn').classList.toggle('on',m==='grid');document.getElementById('fl-btn').classList.toggle('on',m==='list');renderFm()}
+function renderFm(){
+  const f=fmGet(fmP);if(!f||!f.ch)return;
+  document.getElementById('fm-bc').innerHTML='📂 /'+fmP.map((s,i)=>`<span class="seg" onclick="fmP=fmP.slice(0,${i+1});renderFm()">${s}</span>`).join('/');
+  const items=[...f.ch].sort((a,b)=>a.t===b.t?a.name.localeCompare(b.name):(a.t==='d'?-1:1));
+  const dirs=items.filter(i=>i.t==='d'),files=items.filter(i=>i.t!=='d');
+  const c=document.getElementById('fm-c');
+  if(fmV==='grid'){
+    c.innerHTML='<div class="fm-grid">'+items.map(i=>{const ic=i.t==='d'?'📁':(i.i||'📄');const oc=i.t==='d'?`onclick="fmNav('${i.name}')"`:'';return`<div class="fm-gi" ${oc}><span class="fi">${ic}</span><span class="fn">${i.name}</span></div>`}).join('')+'</div>';
+  }else{
+    c.innerHTML=`<div class="fm-list"><div class="fm-lh"><span></span><span>Name</span><span>Size</span><span>Modified</span></div>${items.map(i=>{const ic=i.t==='d'?'📁':(i.i||'📄');const oc=i.t==='d'?`onclick="fmNav('${i.name}')"`:'';const nc=i.t==='d'?'fn dir':'fn';return`<div class="fm-li" ${oc}><span class="fi">${ic}</span><span class="${nc}">${i.name}</span><span class="fs">${i.s||'--'}</span><span class="fd">${i.d||'--'}</span></div>`}).join('')}</div>`;
+  }
+  document.getElementById('fm-cnt').textContent=`${dirs.length} folders, ${files.length} files`;
+  document.getElementById('fm-sz').textContent=fmP.join('/');
+}
+
+/* ═══════════════════════════════════════════════════════
+   💖 FLOATING HEARTS
+   ═══════════════════════════════════════════════════════ */
+function spawnH(){const c=document.getElementById('fh');c.innerHTML='';const h=['💖','💕','💗','💓','❤️','💘','💝','🥰','✨'];for(let i=0;i<20;i++){const s=document.createElement('span');s.textContent=h[Math.floor(Math.random()*h.length)];s.style.left=Math.random()*100+'%';s.style.animationDelay=Math.random()*7+'s';s.style.fontSize=(14+Math.random()*18)+'px';c.appendChild(s)}}
+
+/* 🎵 MUSIC */
+let playing=true;
+function togglePlay(){playing=!playing;document.getElementById('pbtn').textContent=playing?'⏸':'▶️';document.getElementById('disc').classList.toggle('paused',!playing)}
+
+/* 📝 GUESTBOOK */
+function signGb(){const n=document.getElementById('gbn').value.trim()||'Anonymous',m=document.getElementById('gbm').value.trim();if(!m)return;const l=document.getElementById('gb-list'),e=document.createElement('div');e.className='gb-e';e.innerHTML=`<div class="gb-n">@${n}</div><div class="gb-m">${m}</div><div class="gb-d">${new Date().toISOString().slice(0,16).replace('T',' ')}</div>`;l.insertBefore(e,l.firstChild);document.getElementById('gbn').value='';document.getElementById('gbm').value='';notify('Guestbook signed! ✍️')}
+
+/* 📸 LIGHTBOX */
+function lbOpen(el){const p=el.querySelector('.ph'),bg=p.style.background,lb=p.querySelector('.ph-l')?.textContent||'Photo';const bx=document.getElementById('lbox'),inn=document.getElementById('lb-in');inn.style.background=bg;inn.innerHTML=`<span style="font-size:15px">${lb}<br><br><span style="font-size:11px;opacity:.5">Replace placeholder with your image<br>See HTML comments for instructions</span></span>`;bx.classList.add('on')}
+function lbClose(){document.getElementById('lbox').classList.remove('on')}
+
+/* 📋 START MENU */
+function toggleSM(){document.getElementById('smenu').classList.toggle('on')}
+
+/* 🖱️ CONTEXT MENU */
+document.addEventListener('contextmenu',e=>{e.preventDefault();const m=document.getElementById('ctx');m.style.left=e.clientX+'px';m.style.top=e.clientY+'px';m.classList.add('on')});
+document.addEventListener('click',e=>{document.getElementById('ctx').classList.remove('on');const sm=document.getElementById('smenu');if(sm.classList.contains('on')&&!e.target.closest('#smenu')&&!e.target.closest('.bar-start'))sm.classList.remove('on')});
+
+/* 🔔 NOTIFICATION */
+function notify(t){const n=document.getElementById('notif');document.getElementById('ntxt').textContent=t;n.classList.add('on');setTimeout(()=>n.classList.remove('on'),3500)}
+
+/* 👤 ABOUT — Live time & age */
+function updAboutTime(){
+  const el=document.getElementById('about-time');
+  if(el) el.textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+setInterval(updAboutTime,1000);updAboutTime();
+
+// ╔══════════════════════════════════════════╗
+// ║ SET YOUR BIRTHDAY HERE FOR AGE CALC:    ║
+// ║ Format: new Date(YEAR, MONTH-1, DAY)    ║
+// ║ Example: June 15, 2000 = (2000, 5, 15) ║
+// ╚══════════════════════════════════════════╝
+function calcAge(){
+  const bday=new Date(2000, 0, 1); // ← CHANGE: (year, month-1, day)
+  const today=new Date();
+  let age=today.getFullYear()-bday.getFullYear();
+  const m=today.getMonth()-bday.getMonth();
+  if(m<0||(m===0&&today.getDate()<bday.getDate()))age--;
+  const el=document.getElementById('my-age');
+  if(el)el.textContent=age;
+}
+calcAge();
+
+/* ═══════════════════════════════════════════════════════
+   🎮 SNAKE GAME
+   ═══════════════════════════════════════════════════════ */
+let snakeCanvas,snakeCtx,snakeLoop,snake,food,dir,score,best=0,gameOn=false;
+const SZ=18,GRID=20;
+function initSnakeCanvas(){snakeCanvas=document.getElementById('snake-canvas');snakeCtx=snakeCanvas.getContext('2d')}
+function startSnake(){
+  if(!snakeCanvas)initSnakeCanvas();
+  snake=[{x:10,y:10}];dir={x:1,y:0};score=0;gameOn=true;
+  food={x:Math.floor(Math.random()*GRID),y:Math.floor(Math.random()*GRID)};
+  document.getElementById('snake-score').textContent=0;
+  if(snakeLoop)clearInterval(snakeLoop);
+  snakeLoop=setInterval(tickSnake,120);
+}
+function resetSnake(){if(snakeLoop)clearInterval(snakeLoop);gameOn=false;if(snakeCtx){snakeCtx.clearRect(0,0,360,360)}}
+function setDir(x,y){if(gameOn&&(dir.x!== -x||dir.y!== -y)){dir={x,y}}}
+function tickSnake(){
+  const head={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
+  if(head.x<0||head.x>=GRID||head.y<0||head.y>=GRID||snake.some(s=>s.x===head.x&&s.y===head.y)){
+    clearInterval(snakeLoop);gameOn=false;
+    if(score>best){best=score;document.getElementById('snake-best').textContent=best}
+    notify('Game Over! Score: '+score);return;
+  }
+  snake.unshift(head);
+  if(head.x===food.x&&head.y===food.y){
+    score++;document.getElementById('snake-score').textContent=score;
+    food={x:Math.floor(Math.random()*GRID),y:Math.floor(Math.random()*GRID)};
+  }else snake.pop();
+  drawSnake();
+}
+function drawSnake(){
+  const c=snakeCtx;c.clearRect(0,0,360,360);
+  // Grid
+  c.strokeStyle='#ffffff08';c.lineWidth=0.5;
+  for(let i=0;i<=GRID;i++){c.beginPath();c.moveTo(i*SZ,0);c.lineTo(i*SZ,360);c.stroke();c.beginPath();c.moveTo(0,i*SZ);c.lineTo(360,i*SZ);c.stroke()}
+  // Food
+  c.fillStyle='#ff4da6';c.beginPath();c.arc(food.x*SZ+SZ/2,food.y*SZ+SZ/2,SZ/2-2,0,Math.PI*2);c.fill();
+  // Snake
+  snake.forEach((s,i)=>{c.fillStyle=i===0?'#00ffa3':'#00cc82';c.beginPath();c.roundRect(s.x*SZ+1,s.y*SZ+1,SZ-2,SZ-2,4);c.fill()});
+}
+document.addEventListener('keydown',e=>{
+  const w=document.getElementById('w-snake');if(!w||!w.classList.contains('on')||!gameOn)return;
+  if(e.key==='ArrowUp')setDir(0,-1);else if(e.key==='ArrowDown')setDir(0,1);
+  else if(e.key==='ArrowLeft')setDir(-1,0);else if(e.key==='ArrowRight')setDir(1,0);
+});
+
+/* ═══════════════════════════════════════════════════════
+   ⏱️ POMODORO TIMER
+   ═══════════════════════════════════════════════════════ */
+let pomoTime=25*60,pomoMax=25*60,pomoInterval=null,pomoRunning=false,pomoMode='focus',pomoSessions=0;
+function setPomoMode(mins,el){
+  document.querySelectorAll('.pomo-mode').forEach(m=>m.classList.remove('on'));el.classList.add('on');
+  resetPomo();
+  if(mins===0){pomoMode='stopwatch';pomoTime=0;pomoMax=0;document.getElementById('pomo-label').textContent='STOPWATCH'}
+  else{pomoMode='focus';pomoTime=mins*60;pomoMax=mins*60;document.getElementById('pomo-label').textContent=mins===25?'FOCUS MODE':mins===5?'SHORT BREAK':'LONG BREAK'}
+  updPomoDisplay();
+}
+function togglePomo(){
+  if(pomoRunning){clearInterval(pomoInterval);pomoRunning=false;document.getElementById('pomo-start').textContent='▶ Resume';document.getElementById('pomo-start').className='sw-btn start'}
+  else{pomoRunning=true;document.getElementById('pomo-start').textContent='⏸ Pause';document.getElementById('pomo-start').className='sw-btn stop';
+    pomoInterval=setInterval(()=>{
+      if(pomoMode==='stopwatch')pomoTime++;else{pomoTime--;if(pomoTime<=0){clearInterval(pomoInterval);pomoRunning=false;pomoSessions++;document.getElementById('pomo-sessions').textContent=pomoSessions;notify('⏱️ Pomodoro complete!');document.getElementById('pomo-start').textContent='▶ Start';document.getElementById('pomo-start').className='sw-btn start'}}
+      updPomoDisplay();
+    },1000);
+  }
+}
+function resetPomo(){clearInterval(pomoInterval);pomoRunning=false;if(pomoMode==='stopwatch')pomoTime=0;else pomoTime=pomoMax;document.getElementById('pomo-start').textContent='▶ Start';document.getElementById('pomo-start').className='sw-btn start';updPomoDisplay()}
+function updPomoDisplay(){
+  const m=Math.floor(Math.abs(pomoTime)/60),s=Math.abs(pomoTime)%60;
+  document.getElementById('pomo-time').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const circle=document.getElementById('pomo-circle');
+  if(pomoMax>0){const pct=1-(pomoTime/pomoMax);circle.style.strokeDashoffset=628*pct}
+  else{circle.style.strokeDashoffset=0}
+}
+
+/* ═══════════════════════════════════════════════════════
+   🎯 HABIT TRACKER
+   ═══════════════════════════════════════════════════════ */
+const habitsData=[
+  {name:'💻 Code for 2+ hours',icon:'💻',streak:12},
+  {name:'📚 Read 30 minutes',icon:'📚',streak:7},
+  {name:'🏃 Exercise',icon:'🏃',streak:5},
+  {name:'☕ Drink water (8 cups)',icon:'💧',streak:9},
+  {name:'📝 Write / Journal',icon:'📝',streak:3},
+  {name:'🧘 Meditate 10min',icon:'🧘',streak:2},
+  {name:'🚫 No phone before bed',icon:'📱',streak:4},
+];
+let habitsInited=false;
+function initHabits(){
+  if(habitsInited)return;habitsInited=true;
+  const list=document.getElementById('habit-list');
+  list.innerHTML=habitsData.map((h,hi)=>`<div class="habit-row">
+    <div class="habit-icon">${h.icon}</div>
+    <div class="habit-info"><div class="habit-name">${h.name}</div><div class="habit-streak">🔥 <span>${h.streak}</span> day streak</div></div>
+    <div class="habit-dots">${[0,1,2,3,4,5,6].map(d=>`<div class="habit-dot${d<3?' done':''}" onclick="this.classList.toggle('done')">✓</div>`).join('')}</div>
+  </div>`).join('');
+}
+
+/* ═══════════════════════════════════════════════════════
+   💬 CHAT SIMULATOR
+   ═══════════════════════════════════════════════════════ */
+const chatReplies={
+  'hi':['Hey there! 👋','Hello! Welcome!','Hi! How can I help?'],
+  'hello':['Hi! Nice to meet you!','Hello! 🙌','Hey! Ask me anything!'],
+  'who are you':['I\'m Jothiesh — a full-stack developer from Bangalore 🇮🇳','I build GPS platforms, Android apps, and cool stuff with code!'],
+  'skills':['Java, Kotlin, Python, Spring Boot, Android, AWS, Docker... and a lot of coffee ☕'],
+  'projects':['I\'ve built 7 production platforms! GPS tracking, driver monitoring, geofencing, speed limiters, and more 🚀'],
+  'hire':['I\'m available! Email me at jothiesh7@gmail.com 📧','Let\'s connect on LinkedIn! linkedin.com/in/jothiesh-7-joe'],
+  'love':['💖 That\'s classified information 😉','My heart belongs to someone special ❤️'],
+  'default':['Interesting! Tell me more 🤔','That\'s cool! Anything else you\'d like to know?','Thanks for visiting jothiesh.click! 🚀','I\'m just a chat simulator, but the real Jothiesh would love to hear from you! 📧']
+};
+function sendChat(){
+  const inp=document.getElementById('chat-in'),msg=inp.value.trim();if(!msg)return;inp.value='';
+  const box=document.getElementById('chat-box');
+  box.innerHTML+=`<div class="chat-msg me"><div class="chat-name">You</div>${msg}</div>`;
+  box.innerHTML+=`<div class="chat-typing" id="typing">Jothiesh is typing...</div>`;
+  box.scrollTop=box.scrollHeight;
+  setTimeout(()=>{
+    const t=document.getElementById('typing');if(t)t.remove();
+    const key=Object.keys(chatReplies).find(k=>msg.toLowerCase().includes(k))||'default';
+    const replies=chatReplies[key];
+    const reply=replies[Math.floor(Math.random()*replies.length)];
+    box.innerHTML+=`<div class="chat-msg them"><div class="chat-name">Jothiesh 🟢</div>${reply}</div>`;
+    box.scrollTop=box.scrollHeight;
+  },800+Math.random()*800);
+}
+
+/* ═══════════════════════════════════════════════════════
+   🎨 DRAWING BOARD
+   ═══════════════════════════════════════════════════════ */
+let drawCanvas,drawCtx,drawing=false,drawColor='#00ffa3',drawInited=false;
+function initDraw(){
+  if(drawInited)return;drawInited=true;
+  drawCanvas=document.getElementById('draw-canvas');drawCtx=drawCanvas.getContext('2d');
+  drawCtx.lineCap='round';drawCtx.lineJoin='round';
+  drawCanvas.addEventListener('mousedown',e=>{drawing=true;drawCtx.beginPath();drawCtx.moveTo(e.offsetX,e.offsetY)});
+  drawCanvas.addEventListener('mousemove',e=>{if(!drawing)return;drawCtx.strokeStyle=drawColor;drawCtx.lineWidth=document.getElementById('draw-sz').value;drawCtx.lineTo(e.offsetX,e.offsetY);drawCtx.stroke()});
+  drawCanvas.addEventListener('mouseup',()=>drawing=false);
+  drawCanvas.addEventListener('mouseleave',()=>drawing=false);
+  // Touch
+  drawCanvas.addEventListener('touchstart',e=>{e.preventDefault();drawing=true;const r=drawCanvas.getBoundingClientRect();const t=e.touches[0];drawCtx.beginPath();drawCtx.moveTo(t.clientX-r.left,t.clientY-r.top)});
+  drawCanvas.addEventListener('touchmove',e=>{e.preventDefault();if(!drawing)return;const r=drawCanvas.getBoundingClientRect();const t=e.touches[0];drawCtx.strokeStyle=drawColor;drawCtx.lineWidth=document.getElementById('draw-sz').value;drawCtx.lineTo(t.clientX-r.left,t.clientY-r.top);drawCtx.stroke()});
+  drawCanvas.addEventListener('touchend',()=>drawing=false);
+}
+function setDrawColor(c,el){drawColor=c;document.querySelectorAll('.draw-color').forEach(d=>d.classList.remove('on'));el.classList.add('on')}
+function clearCanvas(){if(drawCtx)drawCtx.clearRect(0,0,drawCanvas.width,drawCanvas.height)}
+
+/* ═══════════════════════════════════════════════════════
+   📧 EMAIL FORM
+   ═══════════════════════════════════════════════════════ */
+function sendEmail(){
+  const name=document.getElementById('em-name').value.trim();
+  const email=document.getElementById('em-email').value.trim();
+  const subject=document.getElementById('em-subject').value.trim();
+  if(!name||!email){notify('Please fill name and email');return}
+  // Open mailto
+  window.open(`mailto:jothiesh7@gmail.com?subject=${encodeURIComponent(subject||'Message from '+name)}&body=${encodeURIComponent('From: '+name+' ('+email+')')}`);
+  notify('Opening email client... 📧');
+}
+
+/* ═══════════════════════════════════════════════════════
+   📆 CALENDAR
+   ═══════════════════════════════════════════════════════ */
+let calDate=new Date();
+const calEvents={
+  // Format: 'YYYY-MM-DD': [{title, time, color}]
+  // ── ADD YOUR EVENTS HERE ──
+  '2026-01-01':[{title:'🎉 New Year',time:'All day',color:'var(--gold)'}],
+  '2026-01-26':[{title:'🇮🇳 Republic Day',time:'All day',color:'var(--glow)'}],
+  '2026-02-14':[{title:'💖 Valentine\'s Day',time:'All day',color:'var(--pink)'}],
+  '2026-03-22':[{title:'📋 2026 Q1 Review',time:'10:00 AM',color:'var(--blue)'}],
+  '2026-08-15':[{title:'🇮🇳 Independence Day',time:'All day',color:'var(--glow)'}],
+  '2026-12-25':[{title:'🎄 Christmas',time:'All day',color:'var(--red)'}],
+};
+
+function calNav(dir){
+  if(dir===0)calDate=new Date();
+  else{calDate.setMonth(calDate.getMonth()+dir)}
+  renderCal();
+}
+function renderCal(){
+  const y=calDate.getFullYear(),m=calDate.getMonth();
+  const monthNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('cal-month-title').textContent=`${monthNames[m]} ${y}`;
+
+  const first=new Date(y,m,1).getDay();
+  const days=new Date(y,m+1,0).getDate();
+  const prevDays=new Date(y,m,0).getDate();
+  const today=new Date();
+
+  let html='';
+  ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(d=>html+=`<div class="cal-day-h">${d}</div>`);
+
+  // Previous month
+  for(let i=first-1;i>=0;i--){
+    html+=`<div class="cal-day other">${prevDays-i}</div>`;
+  }
+  // Current month
+  for(let d=1;d<=days;d++){
+    const dateStr=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday=d===today.getDate()&&m===today.getMonth()&&y===today.getFullYear();
+    const hasEvent=calEvents[dateStr];
+    let cls='cal-day';
+    if(isToday)cls+=' today';
+    if(hasEvent)cls+=' event';
+    html+=`<div class="${cls}" onclick="showCalEvents('${dateStr}',this)">${d}</div>`;
+  }
+  // Next month
+  const total=first+days;
+  const remaining=7-(total%7);
+  if(remaining<7){
+    for(let i=1;i<=remaining;i++){
+      html+=`<div class="cal-day other">${i}</div>`;
+    }
+  }
+  document.getElementById('cal-grid').innerHTML=html;
+
+  // Show today's events by default
+  const todayStr=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+  showCalEvents(todayStr);
+}
+
+function showCalEvents(dateStr,el){
+  // Highlight selected
+  document.querySelectorAll('.cal-day.selected').forEach(d=>d.classList.remove('selected'));
+  if(el)el.classList.add('selected');
+
+  const evts=calEvents[dateStr]||[];
+  const container=document.getElementById('cal-events');
+  if(evts.length===0){
+    container.innerHTML=`<div style="text-align:center;padding:14px;color:var(--text-d);font-size:12px">No events on ${dateStr}</div>`;
+    return;
+  }
+  container.innerHTML=evts.map(e=>`<div class="cal-ev"><div class="ev-dot" style="background:${e.color}"></div><div><div class="ev-title">${e.title}</div><div class="ev-time">${e.time}</div></div></div>`).join('');
+}
+
+/* ═══════════════════════════════════════════════════════
+   🧮 CALCULATOR
+   ═══════════════════════════════════════════════════════ */
+let calcExpr='',calcRes='0',calcNewNum=true;
+function calcKey(k){
+  const expr=document.getElementById('calc-expr');
+  const res=document.getElementById('calc-result');
+
+  if(k==='AC'){calcExpr='';calcRes='0';calcNewNum=true}
+  else if(k==='DEL'){
+    if(calcRes.length>1)calcRes=calcRes.slice(0,-1);
+    else calcRes='0';
+  }
+  else if(k==='='){
+    try{
+      calcExpr=calcRes;
+      // Safe eval
+      let evalStr=calcRes.replace(/[^0-9+\-*/.%()]/g,'');
+      let result=Function('"use strict";return ('+evalStr+')')();
+      if(!isFinite(result))result='Error';
+      else result=parseFloat(result.toFixed(10));
+      calcRes=String(result);
+      calcNewNum=true;
+    }catch(e){calcRes='Error';calcNewNum=true}
+  }
+  else if(['+','-','*','/','%'].includes(k)){
+    calcRes+=k;calcNewNum=false;
+  }
+  else{
+    if(calcNewNum&&k!=='.'){calcRes=k;calcNewNum=false}
+    else calcRes+=k;
+  }
+
+  expr.textContent=calcExpr;
+  res.textContent=calcRes;
+}
+// Keyboard support
+document.addEventListener('keydown',e=>{
+  const w=document.getElementById('w-calc');
+  if(!w||!w.classList.contains('on'))return;
+  if(e.key>='0'&&e.key<='9')calcKey(e.key);
+  else if(e.key==='.')calcKey('.');
+  else if(e.key==='+')calcKey('+');
+  else if(e.key==='-')calcKey('-');
+  else if(e.key==='*')calcKey('*');
+  else if(e.key==='/')calcKey('/');
+  else if(e.key==='%')calcKey('%');
+  else if(e.key==='Enter'||e.key==='=')calcKey('=');
+  else if(e.key==='Backspace')calcKey('DEL');
+  else if(e.key==='Escape')calcKey('AC');
+});
+
+/* ═══════════════════════════════════════════════════════
+   📋 YEAR PLANNER — Toggle & Progress
+   ═══════════════════════════════════════════════════════ */
+function togglePlan(el){
+  const item=el.closest('.plan-item');
+  const text=item.querySelector('.plan-text');
+  if(el.classList.contains('done')){
+    el.classList.remove('done');el.textContent='';
+    text.classList.remove('struck');
+  }else{
+    el.classList.add('done');el.textContent='✓';
+    text.classList.add('struck');
+  }
+  updPlanProgress();
+}
+function updPlanProgress(){
+  const all=document.querySelectorAll('#w-planner .plan-chk');
+  const done=document.querySelectorAll('#w-planner .plan-chk.done');
+  const pct=all.length?Math.round(done.length/all.length*100):0;
+  const pctEl=document.getElementById('plan-pct');
+  const fillEl=document.getElementById('plan-fill');
+  if(pctEl)pctEl.textContent=pct+'%';
+  if(fillEl)setTimeout(()=>fillEl.style.width=pct+'%',100);
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════
+   🌍 3D WORLD — Jothiesh & Bambiee — Full Version
+   ═══════════════════════════════════════════════════════ */
+let w3={scene:null,cam:null,ren:null,jot:null,bam:null,inited:false,autoRot:true,hearts:[],fws:[],dancing:false,walking:false,hugging:false,dt:0,wt:0,place:'home',camA:0,camH:10,camD:22,camTarget:{x:0,y:2,z:0}};
+const loveMsgs=['You are my world 💖','Forever & Always ❤️','Jothiesh 💕 Bambiee','I love you to the moon 🌙','You make my code compile 💻❤️','You are my try{} catch{} 💕','404: Life without you not found 💖','while(alive) { love(bambiee); } 💖','git commit -m "loved bambiee forever" ❤️','My heart has O(1) lookup for you 💕'];
+
+function toggleWorldFS(){
+  const win=document.getElementById('w-world3d');
+  win.classList.toggle('fullscreen');
+  setTimeout(()=>{if(w3.ren){const c=document.getElementById('world-container');w3.cam.aspect=c.clientWidth/c.clientHeight;w3.cam.updateProjectionMatrix();w3.ren.setSize(c.clientWidth,c.clientHeight)}},100);
+}
+
+function initWorld3D(){
+  if(w3.inited)return;w3.inited=true;
+  const con=document.getElementById('world-container');
+  const W=con.clientWidth,H=con.clientHeight;
+
+  w3.scene=new THREE.Scene();
+  w3.scene.fog=new THREE.FogExp2(0x0a0a1a,0.008);
+  w3.cam=new THREE.PerspectiveCamera(55,W/H,0.1,1000);
+  w3.cam.position.set(0,10,22);
+  w3.ren=new THREE.WebGLRenderer({antialias:true,alpha:true});
+  w3.ren.setSize(W,H);w3.ren.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  w3.ren.shadowMap.enabled=true;w3.ren.shadowMap.type=THREE.PCFSoftShadowMap;
+  con.appendChild(w3.ren.domElement);w3.ren.domElement.classList.add('world-canvas');
+
+  // Lights
+  const amb=new THREE.AmbientLight(0x334466,0.5);w3.scene.add(amb);w3.scene.userData.amb=amb;
+  const sun=new THREE.DirectionalLight(0xffeedd,1.0);sun.position.set(15,25,10);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);w3.scene.add(sun);w3.scene.userData.sun=sun;
+  const pnk=new THREE.PointLight(0xff4da6,0.4,40);pnk.position.set(-8,6,-8);w3.scene.add(pnk);
+  const grn=new THREE.PointLight(0x00ffa3,0.3,40);grn.position.set(8,4,8);w3.scene.add(grn);
+
+  // Ground
+  const gnd=new THREE.Mesh(new THREE.CylinderGeometry(40,40,0.3,64),new THREE.MeshStandardMaterial({color:0x1a3a1a,roughness:0.9}));
+  gnd.position.y=-0.15;gnd.receiveShadow=true;w3.scene.add(gnd);
+
+  // Paths (lighter ground strips)
+  function makePath(x1,z1,x2,z2,w){
+    const dx=x2-x1,dz=z2-z1,len=Math.sqrt(dx*dx+dz*dz);
+    const path=new THREE.Mesh(new THREE.PlaneGeometry(w,len),new THREE.MeshStandardMaterial({color:0x8a8070,roughness:1}));
+    path.rotation.x=-Math.PI/2;path.position.set((x1+x2)/2,0.02,(z1+z2)/2);
+    path.rotation.z=Math.atan2(dx,dz);w3.scene.add(path);
+  }
+  makePath(0,0,0,-15,1.2);makePath(0,0,-12,0,1.2);makePath(0,0,12,0,1.2);makePath(0,0,0,15,1.2);
+
+  // ═══════ LOCATIONS ═══════
+
+  // 🏠 HOME (center)
+  buildHouse(0,0,0x4d9fff);
+  // 🌳 PARK (north)
+  buildPark(0,-14);
+  // 🍽️ RESTAURANT (east)
+  buildRestaurant(14,0);
+  // 🕯️ CANDLE DINNER (west)
+  buildCandleDinner(-14,0);
+  // 💼 OFFICE (south-east)
+  buildOffice(10,12);
+  // 🏖️ BEACH (south)
+  buildBeach(0,16);
+
+  // Grass & flowers everywhere
+  for(let i=0;i<150;i++){
+    const a=Math.random()*Math.PI*2,r=3+Math.random()*35;
+    const x=Math.cos(a)*r,z=Math.sin(a)*r;
+    const g=new THREE.Mesh(new THREE.CylinderGeometry(0,0.04,0.2+Math.random()*0.3,4),new THREE.MeshStandardMaterial({color:Math.random()>0.8?0x44dd88:0x22aa55}));
+    g.position.set(x,0.1,z);w3.scene.add(g);
+  }
+  for(let i=0;i<40;i++){
+    const cols=[0xff4da6,0xfbbf24,0xa855f7,0xff6b6b,0xffffff];
+    const f=new THREE.Mesh(new THREE.SphereGeometry(0.1,6,6),new THREE.MeshStandardMaterial({color:cols[i%5],emissive:cols[i%5],emissiveIntensity:0.2}));
+    const a=Math.random()*Math.PI*2,r=4+Math.random()*30;
+    f.position.set(Math.cos(a)*r,0.15,Math.sin(a)*r);w3.scene.add(f);
+  }
+
+  // Stars
+  const sGeo=new THREE.BufferGeometry(),sPos=[];
+  for(let i=0;i<600;i++)sPos.push((Math.random()-0.5)*300,30+Math.random()*100,(Math.random()-0.5)*300);
+  sGeo.setAttribute('position',new THREE.Float32BufferAttribute(sPos,3));
+  const stars=new THREE.Points(sGeo,new THREE.PointsMaterial({color:0xffffff,size:0.3,transparent:true,opacity:0.7}));
+  w3.scene.add(stars);w3.scene.userData.stars=stars;
+
+  // Characters
+  w3.jot=makeChar(0x4d9fff,0x2244aa,'J',false);w3.jot.position.set(-1,0,1);w3.scene.add(w3.jot);
+  w3.bam=makeChar(0xff4da6,0xcc2266,'B',true);w3.bam.position.set(1,0,1);w3.scene.add(w3.bam);
+
+  // Floating labels
+  addLabel('Jothiesh 💙',w3.jot,4);
+  addLabel('Bambiee 💖',w3.bam,4);
+
+  // Central heart monument
+  const hrt=new THREE.Mesh(new THREE.SphereGeometry(0.5,16,16),new THREE.MeshStandardMaterial({color:0xff4da6,emissive:0xff2288,emissiveIntensity:0.4,metalness:0.3}));
+  hrt.position.set(0,5,0);hrt.scale.set(1,1.2,0.5);w3.scene.add(hrt);w3.scene.userData.hrt=hrt;
+
+  // Mouse controls
+  let dragging=false,px=0,py=0;
+  const cv=w3.ren.domElement;
+  cv.addEventListener('mousedown',e=>{dragging=true;px=e.clientX;py=e.clientY});
+  cv.addEventListener('mousemove',e=>{if(!dragging)return;w3.camA+=(e.clientX-px)*0.008;w3.camH=Math.max(3,Math.min(25,w3.camH-(e.clientY-py)*0.04));px=e.clientX;py=e.clientY;w3.autoRot=false});
+  cv.addEventListener('mouseup',()=>dragging=false);
+  cv.addEventListener('wheel',e=>{w3.camD=Math.max(8,Math.min(40,w3.camD+e.deltaY*0.02))});
+  // Touch
+  cv.addEventListener('touchstart',e=>{if(e.touches.length===1){dragging=true;px=e.touches[0].clientX;py=e.touches[0].clientY}},{passive:true});
+  cv.addEventListener('touchmove',e=>{if(!dragging||e.touches.length!==1)return;const t=e.touches[0];w3.camA+=(t.clientX-px)*0.008;w3.camH=Math.max(3,Math.min(25,w3.camH-(t.clientY-py)*0.04));px=t.clientX;py=t.clientY;w3.autoRot=false},{passive:true});
+  cv.addEventListener('touchend',()=>dragging=false);
+
+  // Auto-walk story sequence
+  setTimeout(()=>showWorldMsg('💖 Welcome to Jothiesh & Bambiee\'s World! 💖'),500);
+  setTimeout(()=>showWorldMsg('Click locations on the right to explore →'),4000);
+
+  // Animation
+  function tick(){
+    requestAnimationFrame(tick);
+    const t=Date.now()*0.001;
+    if(w3.autoRot)w3.camA+=0.002;
+    // Smooth camera
+    w3.cam.position.x=w3.camTarget.x+Math.sin(w3.camA)*w3.camD;
+    w3.cam.position.z=w3.camTarget.z+Math.cos(w3.camA)*w3.camD;
+    w3.cam.position.y=w3.camH;
+    w3.cam.lookAt(w3.camTarget.x,w3.camTarget.y,w3.camTarget.z);
+
+    // Heart pulse
+    const h=w3.scene.userData.hrt;if(h){const s=1+Math.sin(t*3)*0.08;h.scale.set(s,s*1.2,s*0.5);h.rotation.y=t*0.5}
+
+    // Character idle bob
+    if(!w3.walking&&!w3.dancing&&!w3.hugging){
+      w3.jot.position.y=Math.sin(t*1.5)*0.08;
+      w3.bam.position.y=Math.sin(t*1.5+1)*0.08;
+    }
+
+    // Dancing
+    if(w3.dancing){
+      w3.dt+=0.05;
+      w3.jot.rotation.y=Math.sin(w3.dt*2)*0.6;
+      w3.bam.rotation.y=Math.sin(w3.dt*2+1)*0.6;
+      w3.jot.position.y=Math.abs(Math.sin(w3.dt*3))*0.4;
+      w3.bam.position.y=Math.abs(Math.sin(w3.dt*3+0.5))*0.4;
+    }
+
+    // Walking together
+    if(w3.walking){
+      w3.wt+=0.01;
+      const wx=Math.sin(w3.wt)*6,wz=Math.cos(w3.wt)*6;
+      w3.jot.position.x=wx-0.6;w3.jot.position.z=wz;
+      w3.bam.position.x=wx+0.6;w3.bam.position.z=wz;
+      w3.jot.position.y=Math.abs(Math.sin(w3.wt*8))*0.15;
+      w3.bam.position.y=Math.abs(Math.sin(w3.wt*8+0.5))*0.15;
+      w3.jot.rotation.y=w3.wt+Math.PI/2;w3.bam.rotation.y=w3.wt+Math.PI/2;
+    }
+
+    // Hugging
+    if(w3.hugging){
+      const jt=w3.jot.position,bt=w3.bam.position;
+      jt.x+=(0.3-jt.x)*0.05;bt.x+=(-0.3-bt.x)*0.05;
+      jt.z+=(0-jt.z)*0.02;bt.z+=(0-bt.z)*0.02;
+      w3.jot.rotation.y=0.2;w3.bam.rotation.y=-0.2;
+    }
+
+    // Hearts float
+    w3.hearts.forEach(h=>{h.position.y+=0.02;h.rotation.z=Math.sin(t+h.id)*0.3;h.material.opacity=Math.max(0,1-(h.position.y-4)/8);if(h.position.y>12){h.position.y=1;h.position.x=(Math.random()-0.5)*8;h.position.z=(Math.random()-0.5)*8}});
+    // Fireworks
+    w3.fws=w3.fws.filter(p=>{p.position.add(p.userData.v);p.userData.v.y-=0.003;p.material.opacity-=0.007;if(p.material.opacity<=0){w3.scene.remove(p);return false}return true});
+
+    w3.ren.render(w3.scene,w3.cam);
+  }
+  tick();
+
+  // Resize
+  new ResizeObserver(()=>{const c=con;w3.cam.aspect=c.clientWidth/c.clientHeight;w3.cam.updateProjectionMatrix();w3.ren.setSize(c.clientWidth,c.clientHeight)}).observe(con);
+}
+
+// ═══════ BUILD LOCATIONS ═══════
+function buildHouse(x,z,color){
+  const s=w3.scene;
+  // Base
+  const base=new THREE.Mesh(new THREE.BoxGeometry(4,2.5,3.5),new THREE.MeshStandardMaterial({color:0x556677,roughness:0.7}));
+  base.position.set(x,1.25,z);base.castShadow=true;s.add(base);
+  // Roof
+  const roof=new THREE.Mesh(new THREE.CylinderGeometry(0,3.2,1.5,4),new THREE.MeshStandardMaterial({color:0xcc4444}));
+  roof.position.set(x,3.25,z);roof.rotation.y=Math.PI/4;s.add(roof);
+  // Door
+  const door=new THREE.Mesh(new THREE.BoxGeometry(0.8,1.5,0.1),new THREE.MeshStandardMaterial({color:0x8B4513}));
+  door.position.set(x,0.75,z+1.76);s.add(door);
+  // Windows
+  [-1,1].forEach(wx=>{const win=new THREE.Mesh(new THREE.BoxGeometry(0.6,0.6,0.1),new THREE.MeshStandardMaterial({color:0xffdd44,emissive:0xffdd44,emissiveIntensity:0.3}));win.position.set(x+wx,1.8,z+1.76);s.add(win)});
+  // Label
+  const lbl=new THREE.Mesh(new THREE.BoxGeometry(2,0.4,0.05),new THREE.MeshStandardMaterial({color:0x00ffa3,emissive:0x00ffa3,emissiveIntensity:0.5}));
+  lbl.position.set(x,3.8,z);s.add(lbl);
+}
+
+function buildPark(x,z){
+  const s=w3.scene;
+  // Fountain
+  const base=new THREE.Mesh(new THREE.CylinderGeometry(1.5,1.8,0.5,16),new THREE.MeshStandardMaterial({color:0x888899,metalness:0.4}));
+  base.position.set(x,0.25,z);s.add(base);
+  const water=new THREE.Mesh(new THREE.CylinderGeometry(1.3,1.3,0.3,16),new THREE.MeshStandardMaterial({color:0x4d9fff,transparent:true,opacity:0.6}));
+  water.position.set(x,0.55,z);s.add(water);
+  const pillar=new THREE.Mesh(new THREE.CylinderGeometry(0.2,0.3,2,8),new THREE.MeshStandardMaterial({color:0x999999}));
+  pillar.position.set(x,1.5,z);s.add(pillar);
+  // Trees around
+  [[-2,-2],[2,-2],[-2,2],[2,2],[-3,0],[3,0]].forEach(([tx,tz])=>{
+    const trunk=new THREE.Mesh(new THREE.CylinderGeometry(0.12,0.18,2,8),new THREE.MeshStandardMaterial({color:0x8B4513}));
+    trunk.position.set(x+tx,1,z+tz);trunk.castShadow=true;s.add(trunk);
+    const leaves=new THREE.Mesh(new THREE.SphereGeometry(1,8,8),new THREE.MeshStandardMaterial({color:0x228B22}));
+    leaves.position.set(x+tx,2.5,z+tz);leaves.castShadow=true;s.add(leaves);
+  });
+  // Bench
+  const seat=new THREE.Mesh(new THREE.BoxGeometry(2,0.12,0.5),new THREE.MeshStandardMaterial({color:0xDEB887}));
+  seat.position.set(x,0.7,z+3);s.add(seat);
+  const back=new THREE.Mesh(new THREE.BoxGeometry(2,0.6,0.08),new THREE.MeshStandardMaterial({color:0xDEB887}));
+  back.position.set(x,1.1,z+3.2);s.add(back);
+}
+
+function buildRestaurant(x,z){
+  const s=w3.scene;
+  const bld=new THREE.Mesh(new THREE.BoxGeometry(5,3,4),new THREE.MeshStandardMaterial({color:0x884422,roughness:0.8}));
+  bld.position.set(x,1.5,z);bld.castShadow=true;s.add(bld);
+  const roof=new THREE.Mesh(new THREE.BoxGeometry(5.5,0.3,4.5),new THREE.MeshStandardMaterial({color:0xcc3333}));
+  roof.position.set(x,3.15,z);s.add(roof);
+  // Sign
+  const sign=new THREE.Mesh(new THREE.BoxGeometry(3,0.6,0.1),new THREE.MeshStandardMaterial({color:0xfbbf24,emissive:0xfbbf24,emissiveIntensity:0.4}));
+  sign.position.set(x,3.6,z-2.01);s.add(sign);
+  // Tables outside
+  [-1.5,1.5].forEach(tz=>{
+    const table=new THREE.Mesh(new THREE.CylinderGeometry(0.5,0.5,0.05,8),new THREE.MeshStandardMaterial({color:0xffffff}));
+    table.position.set(x-3,0.75,z+tz);s.add(table);
+    const leg=new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.05,0.75,6),new THREE.MeshStandardMaterial({color:0x666666}));
+    leg.position.set(x-3,0.37,z+tz);s.add(leg);
+  });
+}
+
+function buildCandleDinner(x,z){
+  const s=w3.scene;
+  // Gazebo
+  const floor=new THREE.Mesh(new THREE.CylinderGeometry(2.5,2.5,0.1,8),new THREE.MeshStandardMaterial({color:0x443322}));
+  floor.position.set(x,0.05,z);s.add(floor);
+  // Pillars
+  for(let i=0;i<6;i++){
+    const a=i/6*Math.PI*2;
+    const p=new THREE.Mesh(new THREE.CylinderGeometry(0.08,0.08,3,8),new THREE.MeshStandardMaterial({color:0xdddddd}));
+    p.position.set(x+Math.cos(a)*2.2,1.5,z+Math.sin(a)*2.2);s.add(p);
+  }
+  // Roof
+  const groof=new THREE.Mesh(new THREE.CylinderGeometry(0,3,1.2,6),new THREE.MeshStandardMaterial({color:0x994444,transparent:true,opacity:0.8}));
+  groof.position.set(x,3.6,z);s.add(groof);
+  // Table
+  const tbl=new THREE.Mesh(new THREE.CylinderGeometry(0.7,0.7,0.06,12),new THREE.MeshStandardMaterial({color:0xffffff}));
+  tbl.position.set(x,0.8,z);s.add(tbl);
+  const tleg=new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.06,0.8,6),new THREE.MeshStandardMaterial({color:0x444444}));
+  tleg.position.set(x,0.4,z);s.add(tleg);
+  // Candles
+  [-0.25,0.25].forEach(cx=>{
+    const candle=new THREE.Mesh(new THREE.CylinderGeometry(0.03,0.03,0.2,6),new THREE.MeshStandardMaterial({color:0xffeedd}));
+    candle.position.set(x+cx,0.93,z);s.add(candle);
+    const flame=new THREE.PointLight(0xffaa33,0.5,5);flame.position.set(x+cx,1.1,z);s.add(flame);
+    const fMesh=new THREE.Mesh(new THREE.SphereGeometry(0.04,6,6),new THREE.MeshStandardMaterial({color:0xffaa33,emissive:0xff8800,emissiveIntensity:1}));
+    fMesh.position.set(x+cx,1.05,z);s.add(fMesh);
+  });
+  // Rose
+  const rose=new THREE.Mesh(new THREE.SphereGeometry(0.08,8,8),new THREE.MeshStandardMaterial({color:0xff2222,emissive:0xff0000,emissiveIntensity:0.3}));
+  rose.position.set(x,0.88,z-0.2);s.add(rose);
+}
+
+function buildOffice(x,z){
+  const s=w3.scene;
+  const bld=new THREE.Mesh(new THREE.BoxGeometry(4,4,3),new THREE.MeshStandardMaterial({color:0x445566,roughness:0.5,metalness:0.2}));
+  bld.position.set(x,2,z);bld.castShadow=true;s.add(bld);
+  // Windows grid
+  for(let wy=0;wy<3;wy++)for(let wx=-1;wx<=1;wx++){
+    const win=new THREE.Mesh(new THREE.BoxGeometry(0.6,0.5,0.05),new THREE.MeshStandardMaterial({color:0x88bbff,emissive:0x4488cc,emissiveIntensity:0.2}));
+    win.position.set(x+wx*1.1,1+wy*1.1,z-1.51);s.add(win);
+  }
+  // Sign
+  const sign=new THREE.Mesh(new THREE.BoxGeometry(2.5,0.5,0.1),new THREE.MeshStandardMaterial({color:0x00ffa3,emissive:0x00ffa3,emissiveIntensity:0.4}));
+  sign.position.set(x,4.3,z);s.add(sign);
+  // Desk inside (visible through window)
+  const desk=new THREE.Mesh(new THREE.BoxGeometry(1.5,0.1,0.8),new THREE.MeshStandardMaterial({color:0x8B6914}));
+  desk.position.set(x,0.8,z);s.add(desk);
+}
+
+function buildBeach(x,z){
+  const s=w3.scene;
+  // Sand area
+  const sand=new THREE.Mesh(new THREE.CylinderGeometry(5,5,0.1,16),new THREE.MeshStandardMaterial({color:0xf4d03f,roughness:1}));
+  sand.position.set(x,0.02,z);s.add(sand);
+  // Water
+  const water=new THREE.Mesh(new THREE.PlaneGeometry(12,5),new THREE.MeshStandardMaterial({color:0x2288cc,transparent:true,opacity:0.6,roughness:0.2}));
+  water.rotation.x=-Math.PI/2;water.position.set(x,0.05,z+5);s.add(water);
+  // Umbrella
+  const pole=new THREE.Mesh(new THREE.CylinderGeometry(0.04,0.04,2.5,6),new THREE.MeshStandardMaterial({color:0x888888}));
+  pole.position.set(x-1.5,1.25,z);s.add(pole);
+  const top=new THREE.Mesh(new THREE.CylinderGeometry(0,1.5,0.8,8),new THREE.MeshStandardMaterial({color:0xff4444}));
+  top.position.set(x-1.5,2.6,z);s.add(top);
+  // Towels
+  const towel=new THREE.Mesh(new THREE.BoxGeometry(1.2,0.02,0.6),new THREE.MeshStandardMaterial({color:0xff69b4}));
+  towel.position.set(x-1.5,0.06,z);s.add(towel);
+  const towel2=new THREE.Mesh(new THREE.BoxGeometry(1.2,0.02,0.6),new THREE.MeshStandardMaterial({color:0x4da6ff}));
+  towel2.position.set(x+0.5,0.06,z);s.add(towel2);
+  // Sandcastle
+  const castle=new THREE.Mesh(new THREE.CylinderGeometry(0.3,0.4,0.5,8),new THREE.MeshStandardMaterial({color:0xdaa520}));
+  castle.position.set(x+2,0.25,z-1);s.add(castle);
+  const ctop=new THREE.Mesh(new THREE.CylinderGeometry(0,0.35,0.3,8),new THREE.MeshStandardMaterial({color:0xdaa520}));
+  ctop.position.set(x+2,0.65,z-1);s.add(ctop);
+}
+
+function makeChar(col,dk,letter,isFemale){
+  const g=new THREE.Group();
+  const body=new THREE.Mesh(new THREE.CylinderGeometry(0.38,0.32,1.1,12),new THREE.MeshStandardMaterial({color:dk,roughness:0.6}));
+  body.position.y=1.15;body.castShadow=true;g.add(body);
+  const head=new THREE.Mesh(new THREE.SphereGeometry(0.42,16,16),new THREE.MeshStandardMaterial({color:0xffdbac,roughness:0.7}));
+  head.position.y=2.1;head.castShadow=true;g.add(head);
+  [-0.13,0.13].forEach(x=>{const e=new THREE.Mesh(new THREE.SphereGeometry(0.055,8,8),new THREE.MeshStandardMaterial({color:0x222222}));e.position.set(x,2.2,0.36);g.add(e)});
+  const sm=new THREE.Mesh(new THREE.TorusGeometry(0.09,0.02,4,12,Math.PI),new THREE.MeshStandardMaterial({color:0xcc3333}));
+  sm.position.set(0,2.03,0.36);sm.rotation.x=Math.PI;g.add(sm);
+  const hair=new THREE.Mesh(new THREE.SphereGeometry(0.45,16,16,0,Math.PI*2,0,Math.PI*0.55),new THREE.MeshStandardMaterial({color:isFemale?0x4a2810:0x1a1a2a}));
+  hair.position.y=2.15;g.add(hair);
+  if(isFemale){
+    [-0.33,0.33].forEach(x=>{const s=new THREE.Mesh(new THREE.CylinderGeometry(0.07,0.05,0.9,8),new THREE.MeshStandardMaterial({color:0x4a2810}));s.position.set(x,1.7,0);g.add(s)});
+    const bow=new THREE.Mesh(new THREE.SphereGeometry(0.09,8,8),new THREE.MeshStandardMaterial({color:0xff4da6,emissive:0xff2288,emissiveIntensity:0.3}));
+    bow.position.set(0.28,2.5,0);g.add(bow);
+  }
+  [-0.5,0.5].forEach(x=>{const a=new THREE.Mesh(new THREE.CylinderGeometry(0.07,0.07,0.65,8),new THREE.MeshStandardMaterial({color:0xffdbac}));a.position.set(x,1.4,0);a.rotation.z=x>0?-0.3:0.3;g.add(a)});
+  [-0.16,0.16].forEach(x=>{const l=new THREE.Mesh(new THREE.CylinderGeometry(0.09,0.09,0.55,8),new THREE.MeshStandardMaterial({color:dk}));l.position.set(x,0.28,0);g.add(l)});
+  [-0.16,0.16].forEach(x=>{const s=new THREE.Mesh(new THREE.SphereGeometry(0.11,8,8),new THREE.MeshStandardMaterial({color:0x333333}));s.position.set(x,0.04,0.04);s.scale.set(1,0.6,1.3);g.add(s)});
+  return g;
+}
+
+function addLabel(text,parent,y){
+  const c=document.createElement('canvas');c.width=256;c.height=64;
+  const x=c.getContext('2d');x.font='bold 26px Syne,sans-serif';x.fillStyle='#ffffff';x.textAlign='center';x.fillText(text,128,40);
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true}));
+  sp.scale.set(2,0.5,1);sp.position.y=y;parent.add(sp);
+}
+
+// ═══════ PLACE NAVIGATION ═══════
+const places={
+  home:{x:0,z:2,y:2,msg:'🏠 Home Sweet Home — Our cozy place 💕'},
+  park:{x:0,z:-12,y:2,msg:'🌳 Park Date — Walking together in nature 🌿'},
+  restaurant:{x:12,z:0,y:2,msg:'🍽️ Restaurant — Our favorite date spot 🍕'},
+  dinner:{x:-12,z:0,y:2,msg:'🕯️ Candle Dinner — A romantic evening ✨'},
+  work:{x:10,z:12,y:3,msg:'💼 Jothiesh\'s Office — Where the magic happens 💻'},
+  beach:{x:0,z:16,y:2,msg:'🏖️ Beach — Sunset walks together 🌅'},
+};
+function goPlace(name){
+  const p=places[name];if(!p)return;
+  w3.place=name;
+  // Move characters
+  w3.walking=false;w3.dancing=false;w3.hugging=false;
+  w3.jot.position.set(p.x-0.8,0,p.z);
+  w3.bam.position.set(p.x+0.8,0,p.z);
+  w3.jot.rotation.y=0;w3.bam.rotation.y=0;
+  // Move camera target
+  w3.camTarget={x:p.x,y:p.y,z:p.z};
+  w3.camD=15;w3.camH=8;
+  // Update UI
+  document.getElementById('world-loc-text').textContent=p.msg.split('—')[0];
+  document.querySelectorAll('.world-place').forEach(el=>el.classList.remove('active'));
+  event?.target?.classList.add('active');
+  showWorldMsg(p.msg);
+}
+
+// ═══════ ACTIONS ═══════
+function worldAction(a){
+  switch(a){
+    case 'rotate':w3.autoRot=!w3.autoRot;event?.target?.classList.toggle('active',w3.autoRot);break;
+    case 'day':w3.scene.fog=new THREE.FogExp2(0x87ceeb,0.005);w3.scene.userData.sun.intensity=1.8;w3.scene.userData.amb.intensity=1;w3.scene.userData.stars.visible=false;showWorldMsg('☀️ Beautiful sunny day together!');break;
+    case 'night':w3.scene.fog=new THREE.FogExp2(0x050510,0.012);w3.scene.userData.sun.intensity=0.15;w3.scene.userData.amb.intensity=0.2;w3.scene.userData.stars.visible=true;showWorldMsg('🌙 Stargazing night with you...');break;
+    case 'sunset':w3.scene.fog=new THREE.FogExp2(0x331a00,0.008);w3.scene.userData.sun.intensity=0.8;w3.scene.userData.sun.color.set(0xff8844);w3.scene.userData.amb.intensity=0.5;w3.scene.userData.amb.color.set(0xff6633);w3.scene.userData.stars.visible=false;showWorldMsg('🌅 Golden hour with my love...');break;
+    case 'hearts':
+      for(let i=0;i<20;i++){
+        const h=new THREE.Mesh(new THREE.SphereGeometry(0.12,8,8),new THREE.MeshStandardMaterial({color:0xff4da6,emissive:0xff2288,emissiveIntensity:0.5,transparent:true,opacity:1}));
+        h.position.set(w3.camTarget.x+(Math.random()-0.5)*8,1+Math.random()*2,w3.camTarget.z+(Math.random()-0.5)*8);
+        h.scale.set(1,1.3,0.5);h.id=i;w3.scene.add(h);w3.hearts.push(h);
+      }showWorldMsg('💖💕 Hearts for Bambiee! 💕💖');break;
+    case 'fireworks':
+      for(let b=0;b<4;b++){
+        const ox=w3.camTarget.x+(Math.random()-0.5)*10,oz=w3.camTarget.z+(Math.random()-0.5)*10;
+        const cs=[0xff4da6,0x00ffa3,0xfbbf24,0x4d9fff,0xa855f7];
+        for(let i=0;i<35;i++){
+          const p=new THREE.Mesh(new THREE.SphereGeometry(0.05,4,4),new THREE.MeshStandardMaterial({color:cs[i%5],emissive:cs[i%5],emissiveIntensity:1,transparent:true,opacity:1}));
+          p.position.set(ox,8+Math.random()*3,oz);
+          p.userData.v=new THREE.Vector3((Math.random()-0.5)*0.18,Math.random()*0.12,(Math.random()-0.5)*0.18);
+          w3.scene.add(p);w3.fws.push(p);
+        }
+      }showWorldMsg('🎆 Fireworks for us! 🎆');break;
+    case 'dance':w3.dancing=!w3.dancing;w3.walking=false;w3.hugging=false;if(!w3.dancing){w3.jot.rotation.y=0;w3.bam.rotation.y=0}showWorldMsg(w3.dancing?'💃🕺 Let\'s dance, Bambiee!':'Taking a break 😊');break;
+    case 'walk':w3.walking=!w3.walking;w3.dancing=false;w3.hugging=false;showWorldMsg(w3.walking?'🚶‍♂️🚶‍♀️ Walking hand in hand...':'Stopped to enjoy the view 😊');break;
+    case 'hug':w3.hugging=!w3.hugging;w3.dancing=false;w3.walking=false;showWorldMsg(w3.hugging?'🤗 Hugging tight! I love you Bambiee 💖':'Still close to you ❤️');break;
+    case 'message':showWorldMsg(loveMsgs[Math.floor(Math.random()*loveMsgs.length)]);break;
+  }
+}
+
+function showWorldMsg(text){
+  const el=document.getElementById('world-msg');el.textContent=text;el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),3500);
+}
+</script>
+</body>
+</html>
